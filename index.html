@@ -549,7 +549,7 @@ input, textarea {
 .helpPage{max-width:750px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px calc(40px + env(safe-area-inset-bottom))}
 .helpTop{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:70px 1fr 70px;align-items:center;background:rgba(16,17,18,.96);padding:8px 0 12px;border-bottom:1px solid #2f3337}
 .helpTopTitle{text-align:center;font-size:22px;font-weight:700}.helpBack{appearance:none;border:0;background:none;color:#aeb3bb;font:inherit;font-size:16px;text-align:left;padding:8px 0}
-.helpIntro,.helpNote{color:#aeb3bb;line-height:1.45}.helpIntro{margin:18px 2px 24px;font-size:15px}
+.helpIntro,.helpNote{color:#aeb3bb;line-height:1.45}.helpIntro{margin:18px 2px 24px;font-size:15px;white-space:pre-line}
 .helpSection{margin:0 0 34px}.helpSection h2{font-size:23px;margin:0 0 12px}
 .helpShot{border:1px solid #373b40;border-radius:16px;overflow:hidden;background:#0f1011;margin-bottom:14px}.helpShot img{display:block;width:100%;height:auto}
 .helpText{border:1px solid #373b40;background:#1d1f21;border-radius:16px;padding:15px 16px}.helpText p{font-size:15px;line-height:1.46;margin:0 0 10px}.helpText p:last-child{margin-bottom:0}.helpText b{color:#fff}
@@ -563,7 +563,7 @@ input, textarea {
   <div class="header brandedHeader">
     <div class="titleBlock brandedTitleBlock">
       <img class="setListHeaderLogo" src="setlist-logo.png" alt="Set List">
-      <div class="version">Version 3.1</div>
+      <div class="version">Version 3.2</div>
     </div>
     <div class="headerTools">
       <button id="openLanguage" class="headerToolBtn" type="button">
@@ -788,7 +788,7 @@ function cancelPendingDeletes(){
 }
 const $=id=>document.getElementById(id);
 
-let songs=JSON.parse(localStorage.getItem("setlist_songs")||"null") || [];
+let songs=JSON.parse(localStorage.getItem("setlist_public_songs")||"null") || [];
 
 const uniqueClean=arr=>[...new Set(arr.map(x=>(x||"").trim()).filter(Boolean))];
 const SYSTEM_CATEGORY="Uncategorised";
@@ -798,36 +798,36 @@ const normalizeCategory=x=>{
  return c;
 };
 songs=songs.map(s=>({...s,project:normalizeCategory(s.project)}));
-let repCategories=JSON.parse(localStorage.getItem("setlist_rep_categories")||"null");
+let repCategories=JSON.parse(localStorage.getItem("setlist_public_rep_categories")||"null");
 if(!Array.isArray(repCategories)){
  repCategories=uniqueClean([...songs.map(s=>s.project)]);
 }else{
  repCategories=uniqueClean([...repCategories.map(normalizeCategory),...songs.map(s=>s.project)]);
 }
 
-let main=JSON.parse(localStorage.getItem("setlist_main")||"[]");
-let currentSetName=localStorage.getItem("setlist_current_name")||"";
-let oldEncore=JSON.parse(localStorage.getItem("setlist_encore")||"[]");
+let main=JSON.parse(localStorage.getItem("setlist_public_main")||"[]");
+let currentSetName=localStorage.getItem("setlist_public_current_name")||"";
+let oldEncore=JSON.parse(localStorage.getItem("setlist_public_encore")||"[]");
 if(oldEncore.length){
  const ids=new Set(main.map(x=>x.id));
  oldEncore.forEach(x=>{if(!ids.has(x.id)){main.push({id:x.id});ids.add(x.id)}});
  oldEncore=[];
 }
-let saved=JSON.parse(localStorage.getItem("setlist_saved")||"[]").map((x,i)=>({
+let saved=JSON.parse(localStorage.getItem("setlist_public_saved")||"[]").map((x,i)=>({
  id:x.id||("set_"+Date.now()+"_"+i),
  name:x.name,
  category:normalizeCategory(x.category),
  favorite:!!x.favorite,
  main:[...(x.main||[]),...(x.encore||[])].filter((v,i,a)=>a.findIndex(y=>y.id===v.id)===i)
 }));
-let currentSavedId=localStorage.getItem("setlist_current_saved_id")||"";
+let currentSavedId=localStorage.getItem("setlist_public_current_saved_id")||"";
 if(!currentSavedId && currentSetName){
  const linked=saved.find(x=>x.name===currentSetName);
  if(linked)currentSavedId=linked.id;
 }
-let savedCategories=JSON.parse(localStorage.getItem("setlist_saved_categories")||"null");
-let lastRepFilter=localStorage.getItem("setlist_rep_filter")||"All";
-let lastSavedFilter=localStorage.getItem("setlist_saved_filter")||"All";
+let savedCategories=JSON.parse(localStorage.getItem("setlist_public_saved_categories")||"null");
+let lastRepFilter=localStorage.getItem("setlist_public_rep_filter")||"All";
+let lastSavedFilter=localStorage.getItem("setlist_public_saved_filter")||"All";
 if(!Array.isArray(savedCategories)){
  savedCategories=uniqueClean([...saved.map(x=>x.category)]);
 }else{
@@ -869,20 +869,20 @@ function updateSavedUndoButton(){
 
 
 function persist(){
- localStorage.setItem("setlist_songs",JSON.stringify(songs));
- localStorage.setItem("setlist_rep_categories",JSON.stringify(repCategories));
- localStorage.setItem("setlist_main",JSON.stringify(main.map(x=>({id:x.id}))));
- localStorage.setItem("setlist_current_name",currentSetName);
- localStorage.setItem("setlist_current_saved_id",currentSavedId);
- localStorage.setItem("setlist_encore","[]");
- localStorage.setItem("setlist_saved_categories",JSON.stringify(savedCategories));
- localStorage.setItem("setlist_saved",JSON.stringify(saved.map(x=>({id:x.id,name:x.name,category:x.category,favorite:!!x.favorite,main:x.main,encore:[]}))));
+ localStorage.setItem("setlist_public_songs",JSON.stringify(songs));
+ localStorage.setItem("setlist_public_rep_categories",JSON.stringify(repCategories));
+ localStorage.setItem("setlist_public_main",JSON.stringify(main.map(x=>({id:x.id}))));
+ localStorage.setItem("setlist_public_current_name",currentSetName);
+ localStorage.setItem("setlist_public_current_saved_id",currentSavedId);
+ localStorage.setItem("setlist_public_encore","[]");
+ localStorage.setItem("setlist_public_saved_categories",JSON.stringify(savedCategories));
+ localStorage.setItem("setlist_public_saved",JSON.stringify(saved.map(x=>({id:x.id,name:x.name,category:x.category,favorite:!!x.favorite,main:x.main,encore:[]}))));
 }
 const byId=id=>songs.find(s=>s.id===id);
 const inSet=id=>main.some(x=>x.id===id);
 
 const NEW_CATEGORY="__new_category__";
-let currentLanguage=localStorage.getItem("setlist_language")==="ru"?"ru":"en";
+let currentLanguage=localStorage.getItem("setlist_public_language")==="ru"?"ru":"en";
 const tr=(en,ru)=>currentLanguage==="ru"?ru:en;
 const categoryLabel=cat=>cat===SYSTEM_CATEGORY?tr("Uncategorized","Без категории"):cat;
 const repFilterCategories=()=>uniqueClean([...repCategories.filter(c=>c!==SYSTEM_CATEGORY),...(songs.some(s=>s.project===SYSTEM_CATEGORY)?[SYSTEM_CATEGORY]:[])]);
@@ -1787,7 +1787,7 @@ $("filter").onchange=()=>{
   $("filter").value=cat||"All";
  }
  lastRepFilter=$("filter").value;
- localStorage.setItem("setlist_rep_filter",lastRepFilter);
+ localStorage.setItem("setlist_public_rep_filter",lastRepFilter);
  updateCategoryManageButtons();
  renderRep();
 };
@@ -1798,7 +1798,7 @@ $("savedFilter").onchange=()=>{
   $("savedFilter").value=cat||"All";
  }
  lastSavedFilter=$("savedFilter").value;
- localStorage.setItem("setlist_saved_filter",lastSavedFilter);
+ localStorage.setItem("setlist_public_saved_filter",lastSavedFilter);
  updateCategoryManageButtons();
  renderSaved();updateSavedUndoButton();
 };
@@ -2081,7 +2081,7 @@ function applyHelpLanguage(){
  const set=(id,html)=>{const el=document.getElementById(id);if(el)el.innerHTML=html};
  set("closeHelp",ru?"‹ Назад":"‹ Back");
  const top=document.querySelector('.helpTopTitle');if(top)top.textContent=ru?"Помощь":"Help";
- set("helpIntro",ru?"Подробное руководство по основным функциям Set List. Все данные хранятся локально на вашем устройстве; резервную копию можно экспортировать во вкладке «Сеты».":"A detailed guide to the main Set List controls. Your data is stored locally on your device; you can export a backup from Saved Sets.");
+ set("helpIntro",ru?"Конфиденциальность\nВаш репертуар и сет-листы хранятся локально на вашем устройстве. Set List не передаёт эти данные на сервер.\n\nПодробное руководство по основным функциям Set List. Резервную копию можно экспортировать во вкладке «Сеты».":"Privacy\nYour repertoire and set lists are stored locally on your device. Set List does not transmit this data to a server.\n\nA detailed guide to the main Set List controls. You can export a backup from Saved Sets.");
  set("helpRepTitle",ru?"Репертуар":"Repertoire");
  set("helpCurrentTitle",ru?"Текущий сет":"Current Set");
  set("helpSavedTitle",ru?"Сеты":"Saved Sets");
@@ -2184,8 +2184,8 @@ const languageOverlay=document.getElementById("languageOverlay");
 $("openLanguage").onclick=()=>{languageOverlay.hidden=false};
 $("languageCancel").onclick=()=>{languageOverlay.hidden=true};
 languageOverlay.onclick=e=>{if(e.target===languageOverlay)languageOverlay.hidden=true};
-$("languageEnglish").onclick=()=>{currentLanguage="en";localStorage.setItem("setlist_language","en");languageOverlay.hidden=true;applyLanguage()};
-$("languageRussian").onclick=()=>{currentLanguage="ru";localStorage.setItem("setlist_language","ru");languageOverlay.hidden=true;applyLanguage()};
+$("languageEnglish").onclick=()=>{currentLanguage="en";localStorage.setItem("setlist_public_language","en");languageOverlay.hidden=true;applyLanguage()};
+$("languageRussian").onclick=()=>{currentLanguage="ru";localStorage.setItem("setlist_public_language","ru");languageOverlay.hidden=true;applyLanguage()};
 applyLanguage();
 
 const helpOverlay=document.getElementById("helpOverlay");
