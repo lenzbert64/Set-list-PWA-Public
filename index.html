@@ -533,6 +533,13 @@ input, textarea {
 .messageBrand{gap:0;transform:translateY(8px);margin-left:auto;padding-right:4px}
 .messageBrand .messageLogo{margin-left:0}
 
+/* v2.9 global header tools */
+.headerTools{margin-left:auto;display:flex;align-items:center;gap:8px;padding:3px 7px 0 0}
+.headerToolBtn{appearance:none;border:0;background:transparent;color:#aeb3bb;width:38px;height:38px;padding:7px;display:grid;place-items:center;border-radius:10px}
+.headerToolBtn:active{background:#25282b;color:#fff}
+.headerToolBtn svg{display:block;width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:650px){.headerTools{gap:5px;padding-right:5px}.headerToolBtn{width:36px;height:36px;padding:7px}.headerToolBtn svg{width:22px;height:22px}}
+
 /* v2.4 Help */
 .helpLinkWrap{text-align:center;padding:8px 0 2px}
 .helpLink{appearance:none;border:0;background:none;color:#aeb3bb;font:inherit;font-size:14px;text-decoration:underline;text-underline-offset:3px;padding:8px 18px}
@@ -554,7 +561,15 @@ input, textarea {
   <div class="header brandedHeader">
     <div class="titleBlock brandedTitleBlock">
       <img class="setListHeaderLogo" src="setlist-logo.png" alt="Set List">
-      <div class="version">Version 2.8</div>
+      <div class="version">Version 2.9</div>
+    </div>
+    <div class="headerTools">
+      <button id="openLanguage" class="headerToolBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.4 2.5 3.7 5.5 3.7 9S14.4 18.5 12 21M12 3C9.6 5.5 8.3 8.5 8.3 12S9.6 18.5 12 21"></path></svg>
+      </button>
+      <button id="openHelp" class="headerToolBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M9.7 9a2.45 2.45 0 1 1 4.4 1.5c-.9 1.1-2.1 1.4-2.1 3"></path><path d="M12 17.2h.01"></path></svg>
+      </button>
     </div>
   </div>
 
@@ -648,7 +663,6 @@ input, textarea {
       </div>
       <div class="note">Backup includes Repertoire, Current Set, and all Saved Sets.</div>
     </div>
-    <div class="helpLinkWrap"><button id="openHelp" class="helpLink" type="button">Help</button><span class="helpSep"> · </span><button id="openLanguage" class="helpLink" type="button">Language</button></div>
   </section>
 </div>
 
@@ -2078,7 +2092,6 @@ function applyLanguage(){
  q('#panel-set .section',tr("Save current set","Сохранить текущий сет")); $("setName").placeholder=tr("Set name","Название сета"); q('#saveSet',tr("Save","Сохранить"));
  q('#panel-saved .section',tr("Saved Sets","Сохранённые сеты"));q('#panel-saved .holdhint',tr("Press and hold a saved set name to edit it.","Нажмите и удерживайте название сохранённого сета для редактирования."));q('#undoSaved',tr("Undo last change","Отменить последнее изменение"));
  q('#panel-saved .backup .section',tr("Backup / Restore","Резервная копия / Восстановление"));q('#exportBackup',tr("Export Backup","Экспорт копии"));q('#importBackup',tr("Import Backup","Импорт копии"));q('#panel-saved .backup .note',tr("Backup includes Repertoire, Current Set, and all Saved Sets.","Резервная копия включает Репертуар, Текущий сет и все Сохранённые сеты."));
- q('#openHelp',tr("Help","Помощь"));q('#openLanguage',tr("Language","Язык"));
  q('#savedEditHeading',tr("Edit Saved Set","Редактировать сет")); const labs=document.querySelectorAll('#savedEditOverlay label');if(labs[0])labs[0].textContent=tr("Set name","Название сета");if(labs[1])labs[1].textContent=tr("Category","Категория");q('#savedEditNewCategory',tr("New category…","Новая категория…"));q('#savedEditCancel',tr("Cancel","Отмена"));q('#savedEditSave',tr("Save","Сохранить"));
  q('#songDeleteConfirm',tr("Delete song","Удалить песню"));q('#songDeleteCancel',tr("Cancel","Отмена"));q('#categoryManageCancel',tr("Cancel","Отмена"));q('#accidentalPickerTitle',tr("Key","Тональность"));q('#accCancel',tr("Cancel","Отмена"));
  q('#languageTitle',tr("Language","Язык"));q('#languageCancel',tr("Cancel","Отмена"));
