@@ -1,0 +1,2127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111214">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Set List</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;color-scheme:light dark}
+*{box-sizing:border-box}
+body{margin:0;background:#f4f4f6;color:#111}
+button,input,select,textarea{font:inherit}
+.wrap{max-width:820px;margin:auto;padding:12px}
+.header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;width:100%}
+h1{font-size:23px;margin:0}
+.version{font-size:11px;color:#888;margin-top:1px}
+.card{background:#fff;border:1px solid #dadde1;border-radius:12px;padding:9px;margin:9px 0}
+.tabs{display:flex;gap:6px;overflow:auto;margin:10px 0}
+.tab,.btn{min-height:38px;border-radius:9px;border:1px solid #cfd3d8;background:#fff;color:#111;padding:6px 10px}
+.tab.active,.btn.primary{background:#111;color:#fff;border-color:#111}
+.panel{display:none}.panel.active{display:block}
+.toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px}
+input,select,textarea{min-height:38px;border:1px solid #cfd3d8;border-radius:9px;background:#fff;color:#111;padding:7px 9px;min-width:0}
+textarea{width:100%;min-height:120px;resize:vertical}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 30px 32px 38px;gap:7px;align-items:center;padding:7px 0;border-top:1px solid #eceef1}
+.row:first-child{border-top:0}
+.songline{display:flex;align-items:baseline;gap:8px;min-width:0}
+.title{font-weight:650;line-height:1.18}
+.duration{font-size:13px;color:#6c7179;white-space:nowrap}
+.actions{display:flex;gap:5px;align-items:center;justify-content:flex-end}
+.toggle,.remove{width:38px;min-width:38px;padding:4px;font-size:18px;font-weight:700}
+.remove{border-color:#d5d7db;background:#fff;color:#555}
+.toggle.inset{background:#34c759;color:#fff;border-color:#34c759}
+.section{font-size:16px;font-weight:700;margin-bottom:6px}
+.note,.meta{font-size:12px;color:#6c7179}
+.empty{text-align:center;padding:12px;color:#777}
+.addCard summary{font-weight:650;cursor:pointer;list-style:none;padding:2px 0}
+.addCard summary::-webkit-details-marker{display:none}
+.addCard summary::after{content:"＋";float:right;font-size:18px;font-weight:400}
+.addCard[open] summary::after{content:"−"}
+.form{display:grid;grid-template-columns:minmax(0,1fr) 60px 60px 105px auto;gap:6px;margin-top:8px}
+.bulkActions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.bulkActions select{min-width:110px}
+.stickyStats{position:sticky;top:0;z-index:20;background:rgba(244,244,246,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:6px 0}
+.statbar{background:#fff;border:1px solid #dadde1;border-radius:10px;padding:8px 10px;text-align:center;font-weight:650}
+.setrow{display:grid;grid-template-columns:24px minmax(0,1fr) 30px 38px 32px;gap:7px;align-items:center;padding:8px 0;border-top:1px solid #eceef1;touch-action:pan-y}
+.setrow:first-child{border-top:0}
+.num{font-size:13px;color:#777;text-align:center}
+.handle{font-size:22px;color:#777;text-align:center;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+.setrow.dragging{opacity:.45}
+.setrow.dragover{border-top:2px solid #777}
+.savebar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px}
+.backup{margin-top:28px}
+#undoSet{display:block;width:100%;margin:0 0 8px 0}
+#clearSet{display:block;width:100%;margin:0 0 8px 0}
+#updateSet{display:block;width:100%;margin:0 0 8px 0}
+#shareSet{display:block;width:100%}
+#undoSet:disabled,#updateSet:disabled{opacity:.42}
+.holdhint{font-size:11px;color:#8a8f96;margin-top:4px}
+
+.savedrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;align-items:center;padding:7px 0;border-top:1px solid #eceef1}
+.savedrow:first-child{border-top:0}
+.savedopen{min-width:0;cursor:pointer;padding:3px 0;touch-action:manipulation}
+.savedopen .title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.savedactions{display:contents}
+.savedmini{min-height:34px;padding:4px 7px;border-radius:8px;font-size:12px;white-space:nowrap}
+
+@media(max-width:650px){
+ .wrap{padding:10px}
+ .row{grid-template-columns:minmax(0,1fr) 30px 32px 38px}
+ .form{grid-template-columns:minmax(0,1fr) 56px 56px}
+ .form select{grid-column:1/3}
+ .form .add{grid-column:3}
+ .tabs .tab{white-space:nowrap}
+}
+@media(prefers-color-scheme:dark){
+ body{background:#111214;color:#f5f5f7}
+ .card,.tab,.btn,input,select,textarea,.statbar{background:#1d1f22;color:#f5f5f7;border-color:#35383e}
+ .tab.active,.btn.primary{background:#f5f5f7;color:#111;border-color:#f5f5f7}
+ .duration,.note,.meta,.holdhint,.num,.handle,.version{color:#a8adb5}
+ .row,.setrow,.savedrow{border-color:#2d3035}
+ .stickyStats{background:rgba(17,18,20,.94)}
+ .toggle.inset{background:#34c759;color:#fff;border-color:#34c759}
+}
+
+/* iOS/PWA: prevent accidental double-tap zoom on controls; pinch zoom remains available. */
+button, input, select, textarea, summary, .row, .setrow, .handle, .title, .tab {
+  touch-action: manipulation;
+}
+.handle {
+  touch-action: none;
+}
+
+
+.setNameStats{margin-top:8px}
+.setNameStats .statbar{font-weight:700}
+
+/* Current Set: only the time/count bar stays visible while scrolling. */
+#panel-set > .stickyStats:first-child{
+  position:sticky;
+  top:0;
+  z-index:20;
+  margin:0;
+  padding:6px 0;
+}
+
+/* The saved-set name scrolls normally and sits compactly under Total. */
+#panel-set > .setNameStats{
+  position:static !important;
+  top:auto !important;
+  z-index:auto;
+  margin:0 0 8px 0;
+  padding:0;
+  background:transparent;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+}
+
+
+.savedHeader{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;margin-bottom:4px}
+.savedHeader .section{margin-bottom:0}
+.savedHeader select{min-width:132px;max-width:180px}
+#undoSaved{display:block;width:100%}
+#undoSaved:disabled{opacity:.42}
+.savedSavebar{grid-template-columns:minmax(0,1fr) minmax(120px,auto) auto}
+.savedopen .title{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+@media(max-width:650px){
+ .savedSavebar{grid-template-columns:minmax(0,1fr) auto}
+ .savedSavebar #setCategory{grid-column:1}
+ .savedSavebar #saveSet{grid-column:2;grid-row:1/3}
+}
+
+
+.pickerOverlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,.66);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.pickerOverlay[hidden]{display:none}
+.pickerDialog{
+  width:min(430px,100%);
+  max-height:80vh;
+  overflow:auto;
+  background:#fff;
+  color:#111;
+  border:1px solid #dadde1;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 18px 60px rgba(0,0,0,.4);
+}
+.pickerTitle{font-size:22px;font-weight:800;margin:2px 0 12px}
+.pickerOptions{
+  display:block;
+  border:1px solid #cfd3d8;
+  border-radius:12px;
+  overflow:hidden;
+}
+.pickerOption{
+  width:100%;
+  min-height:46px;
+  text-align:left;
+  border:0;
+  border-radius:0;
+  border-bottom:1px solid #dfe2e6;
+  margin:0;
+}
+.pickerOption:last-child{border-bottom:0}
+.pickerOption.selected{font-weight:800}
+.pickerCancel{width:100%;margin-top:10px}
+@media(prefers-color-scheme:dark){
+  .pickerDialog{
+    background:#1d1f22;
+    color:#f5f5f7;
+    border-color:#35383e;
+  }
+  .pickerOptions{border-color:#3a3e44}
+  .pickerOption{border-bottom-color:#35383e}
+}
+
+
+.currentSetNameEditable{cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+
+.currentSetNameRow{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 28px;
+  gap:6px;
+  align-items:center;
+}
+.currentSetNameEditable{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.favoriteToggle{
+  width:28px;
+  height:28px;
+  min-height:28px;
+  padding:0;
+  margin:0;
+  border:0;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  font-size:20px;
+  line-height:28px;
+  text-align:center;
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
+.favoriteToggle[hidden]{display:none}
+.favoriteToggle.inactive{opacity:.28}
+.savedTitleLine{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:5px;
+  align-items:center;
+  min-width:0;
+}
+.savedFavoriteMark{
+  font-size:15px;
+  line-height:1;
+  white-space:nowrap;
+}
+.savedFavoriteMark[hidden]{display:none}
+
+
+/* v1.32 genuinely compact row density. */
+.row{
+  min-height:0;
+  padding:3px 0;
+}
+.setrow{
+  min-height:0;
+  padding:3px 0;
+}
+.savedrow{
+  min-height:0;
+  padding:3px 0;
+}
+.row .title,.setrow .title,.savedrow .title{
+  line-height:1.08;
+}
+.row .meta,.setrow .meta,.savedrow .meta{
+  margin-top:1px;
+  line-height:1.05;
+}
+.toggle,.remove{
+  min-height:36px;
+  height:36px;
+}
+.handle{
+  min-height:34px;
+  height:34px;
+  line-height:34px;
+}
+.savedmini{
+  min-height:30px;
+  height:30px;
+  padding:2px 7px;
+}
+
+
+.songkey{
+  font-size:16px;
+  font-weight:500;
+  color:#8a8f96;
+  text-align:right;
+  padding-right:3px;
+  white-space:nowrap;
+  line-height:1;
+  align-self:center;
+  min-width:0;
+}
+
+
+.setrow.pending-delete{
+ position:relative;z-index:1;
+ box-shadow:inset 0 0 0 1px #d84a4a;
+ border-radius:8px;
+}
+.setrow.pending-delete .remove{color:#ff6b6b;border-color:#d84a4a}
+.setrow.pending-delete .handle{pointer-events:none;opacity:.45}
+
+.savedEditOverlay{
+  position:fixed;
+  left:0;right:0;top:0;
+  height:100dvh;
+  z-index:1200;
+  background:rgba(0,0,0,.66);
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:calc(env(safe-area-inset-top) + 14px) 14px 14px;
+  overflow:auto;
+}
+.savedEditOverlay[hidden]{display:none}
+.savedEditDialog{
+  width:min(430px,100%);
+  max-height:calc(100dvh - env(safe-area-inset-top) - 28px);
+  overflow:auto;
+  background:#fff;
+  color:#111;
+  border:1px solid #dadde1;
+  border-radius:16px;
+  padding:14px;
+  box-shadow:0 18px 60px rgba(0,0,0,.45);
+}
+.savedEditTitle{font-size:20px;font-weight:800;margin:0 0 12px}
+.savedEditDialog label{
+  display:block;
+  font-size:12px;
+  color:#6c7179;
+  margin:9px 0 4px;
+}
+.savedEditDialog input,.savedEditDialog select{
+  width:100%;
+  margin:0;
+}
+.savedEditNewCat{width:100%;margin-top:8px}
+.savedEditActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+@media(prefers-color-scheme:dark){
+  .savedEditDialog{
+    background:#1d1f22;
+    color:#f5f5f7;
+    border-color:#35383e;
+  }
+  .savedEditDialog label{color:#a8adb5}
+}
+
+html,body,.card,.row,.setrow,.tabs,.tab,button{
+  touch-action:manipulation;
+}
+
+/* v1.45: app UI behaves like a native app — no accidental text selection. */
+body, .wrap, .tabs, .tab, .card, .row, .setrow, .savedrow,
+.title, .duration, .meta, .num, .songkey, .stat, .hint,
+button, label, summary {
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
+input, textarea {
+  -webkit-user-select:text;
+  user-select:text;
+  -webkit-touch-callout:default;
+}
+
+
+.undoRedoRow{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  width:100%;
+}
+.undoRedoRow button{width:100%}
+
+
+/* v1.48: swipe right on a Repertoire row to reveal Delete on the left. */
+.repSwipeWrap{
+  position:relative;
+  overflow:hidden;
+  border-bottom:1px solid rgba(127,127,127,.18);
+}
+.repSwipeWrap .row{
+  position:relative;
+  z-index:2;
+  background:var(--bg,#fff);
+  border-bottom:0 !important;
+  transform:translateX(0);
+  transition:transform .18s ease;
+  will-change:transform;
+}
+@media (prefers-color-scheme:dark){
+  .repSwipeWrap .row{background:#1d1f22}
+}
+.repSwipeDelete{
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:92px;
+  border:0;
+  border-radius:0;
+  margin:0;
+  padding:0 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font:inherit;
+  font-weight:700;
+  background:#d9363e;
+  color:#fff;
+  z-index:1;
+}
+.repSwipeWrap.open .row{transform:translateX(92px)}
+
+
+/* v1.52: key text is tappable without changing its visual layout. */
+.songkey.keyTap{
+  cursor:pointer;
+  touch-action:manipulation;
+}
+
+
+/* v1.53 row geometry refinements only */
+
+/* Title and duration remain one natural inline unit; if the title wraps,
+   duration follows immediately after the final title word. */
+.songline{
+  display:block;
+  min-width:0;
+  line-height:1.18;
+}
+.songline .title{
+  display:inline;
+  white-space:normal;
+  overflow:visible;
+  text-overflow:clip;
+}
+.songline .duration{
+  display:inline;
+  margin-left:8px;
+  white-space:nowrap;
+}
+
+/* Current Set: reclaim horizontal space from the number column. */
+.setrow{
+  grid-template-columns:18px minmax(0,1fr) 30px 38px 32px;
+  gap:7px;
+}
+.setrow .num{
+  text-align:left;
+  padding-left:0;
+}
+
+/* Keep the key column exactly where the existing grid puts it.
+   The note letter owns a fixed slot; accidental is absolutely placed
+   to its right, so F and F# share the same letter axis. */
+.songkey{
+  position:relative;
+  width:30px;
+  padding-right:3px;
+  box-sizing:border-box;
+  text-align:right;
+  overflow:visible;
+}
+.songkey .keyBase{
+  display:block;
+  width:18px;
+  margin-left:auto;
+  text-align:center;
+}
+.songkey .keyAcc{
+  position:absolute;
+  left:23px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:13px;
+  line-height:1;
+}
+
+
+/* v1.55: category management + iOS swipe-delete compositing guard */
+.repSwipeDelete{visibility:hidden}
+.repSwipeWrap.open .repSwipeDelete,
+.repSwipeWrap.swiping .repSwipeDelete{visibility:visible}
+
+
+/* v1.56: explicit category management button; reliable on iOS native selects */
+.categoryFilterGroup{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 36px;
+  gap:5px;
+  align-items:center;
+  min-width:0;
+}
+.categoryFilterGroup:has(.categoryManageBtn[hidden]){
+  grid-template-columns:minmax(0,1fr);
+}
+.categoryManageBtn{
+  width:36px;
+  min-width:36px;
+  height:36px;
+  min-height:36px;
+  padding:0;
+  font-size:20px;
+  line-height:1;
+}
+
+
+.keyPickerDialog{max-width:330px}
+.keyPickerGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.keyPickerGrid .pickerOption{min-width:0;padding:10px 4px;font-size:17px}
+.keyPickerGrid .keyNone{}
+
+.messageLogo{display:block;width:auto;height:38px;max-width:42%;object-fit:contain;object-position:right center;flex:0 0 auto;margin-left:auto}
+@media(max-width:650px){.messageLogo{height:34px;max-width:40%}}
+
+.brandedHeader{align-items:flex-start}
+.brandedTitleBlock{display:flex;flex-direction:column;align-items:flex-start}
+.setListHeaderLogo{display:block;width:auto;height:42px;max-width:150px;object-fit:contain;object-position:left center}
+.messageBrand{display:flex;align-items:center;gap:5px;margin-left:auto;padding-top:2px}
+.byLabel{font-size:12px;color:#aeb3bb;line-height:1}
+.messageBrand .messageLogo{height:38px;max-width:130px;margin-left:0}
+@media(max-width:650px){.setListHeaderLogo{height:40px;max-width:145px}.messageBrand .messageLogo{height:34px;max-width:118px}.byLabel{font-size:11px}}
+
+
+/* v2.3 header alignment */
+.brandedHeader{padding-left:8px;padding-right:0;box-sizing:border-box}
+.brandedTitleBlock{transform:translateX(4px)}
+.messageBrand{gap:0;transform:translateY(8px);margin-left:auto;padding-right:4px}
+.messageBrand .messageLogo{margin-left:0}
+
+/* v2.4 Help */
+.helpLinkWrap{text-align:center;padding:8px 0 2px}
+.helpLink{appearance:none;border:0;background:none;color:#aeb3bb;font:inherit;font-size:14px;text-decoration:underline;text-underline-offset:3px;padding:8px 18px}
+.helpOverlay{position:fixed;inset:0;z-index:1000;background:#101112;color:#f3f3f5;overflow:auto;-webkit-overflow-scrolling:touch}
+.helpPage{max-width:750px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px calc(40px + env(safe-area-inset-bottom))}
+.helpTop{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:70px 1fr 70px;align-items:center;background:rgba(16,17,18,.96);padding:8px 0 12px;border-bottom:1px solid #2f3337}
+.helpTopTitle{text-align:center;font-size:22px;font-weight:700}.helpBack{appearance:none;border:0;background:none;color:#aeb3bb;font:inherit;font-size:16px;text-align:left;padding:8px 0}
+.helpIntro,.helpNote{color:#aeb3bb;line-height:1.45}.helpIntro{margin:18px 2px 24px;font-size:15px}
+.helpSection{margin:0 0 34px}.helpSection h2{font-size:23px;margin:0 0 12px}
+.helpShot{border:1px solid #373b40;border-radius:16px;overflow:hidden;background:#0f1011;margin-bottom:14px}.helpShot img{display:block;width:100%;height:auto}
+.helpText{border:1px solid #373b40;background:#1d1f21;border-radius:16px;padding:15px 16px}.helpText p{font-size:15px;line-height:1.46;margin:0 0 10px}.helpText p:last-child{margin-bottom:0}.helpText b{color:#fff}
+.helpGestures{display:grid;grid-template-columns:1fr 1fr;gap:9px}.helpGesture{border:1px solid #373b40;background:#1d1f21;border-radius:14px;padding:13px}.helpGesture b{display:block;margin-bottom:4px}.helpGesture span{font-size:14px;color:#aeb3bb;line-height:1.35}
+@media(max-width:520px){.helpGestures{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header brandedHeader">
+    <div class="titleBlock brandedTitleBlock">
+      <img class="setListHeaderLogo" src="setlist-logo.png" alt="Set List">
+      <div class="version">Version 2.6</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="rep">Repertoire</button>
+    <button class="tab" data-tab="set">Current Set</button>
+    <button class="tab" data-tab="saved">Saved Sets</button>
+  </div>
+
+  <section id="panel-rep" class="panel active">
+    <div class="card">
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="Search songs...">
+        <div class="categoryFilterGroup"><select id="filter"></select><button id="repCategoryManage" class="btn categoryManageBtn" type="button" aria-label="Manage category" hidden>⋯</button></div>
+      </div>
+      <div class="stickyStats"><div class="statbar"><span id="repCount">0</span> <span class="songsLabel">songs</span> · <span class="totalLabel">Total</span> <span id="repTotal">0:00</span></div></div>
+      <div id="rep"></div>
+      <div class="holdhint">Press and hold a song title to edit.</div>
+    </div>
+
+    <details class="card addCard">
+      <summary>Add song</summary>
+      <form id="addForm" class="form">
+        <input id="newTitle" type="text" placeholder="Title" required>
+        <input id="newMin" type="number" min="0" max="99" inputmode="numeric" placeholder="min">
+        <input id="newSec" type="number" min="0" max="59" inputmode="numeric" placeholder="sec">
+        <button id="newKey" type="button" class="btn" data-value="">Key</button>
+        <select id="newProject"></select>
+        <button class="btn primary add" type="submit">Add</button>
+      </form>
+    </details>
+
+    <details class="card addCard">
+      <summary>Add songs as a list</summary>
+      <textarea id="bulkText" placeholder="Song One—3:42—Am&#10;Song Two—4:05—E&#10;Song Three—3:18"></textarea>
+      <div class="bulkActions">
+        <select id="bulkProject"></select>
+        <button id="bulkAdd" class="btn primary" type="button">Add all</button>
+      </div>
+      <div class="note">One song per line: Title—3:42—Am. Key is optional.</div>
+      <div id="bulkResult" class="note"></div>
+    </details>
+  </section>
+
+  <section id="panel-set" class="panel">
+    <div class="stickyStats"><div class="statbar"><span id="count">0</span> <span class="songsLabel">songs</span> · <span class="totalLabel">Total</span> <span id="total">0:00</span></div></div>
+    <div id="currentSetNameBar" class="stickyStats setNameStats" hidden>
+      <div class="statbar currentSetNameRow">
+        <div class="currentSetNameEditable" id="currentSetName" title="Press and hold to edit saved set"></div>
+        <button id="currentSetFavorite" class="favoriteToggle" type="button" aria-label="Mark saved set with a star" title="Mark saved set with a star" hidden>☆</button>
+      </div>
+    </div>
+    <div class="card"><div id="main"></div></div>
+    <div class="card">
+      <div class="undoRedoRow">
+  <button id="undoSet" class="btn" type="button" disabled>Undo</button>
+  <button id="redoSet" class="btn" type="button" disabled>Redo</button>
+</div>
+      <button id="clearSet" class="btn" type="button">Clear current set</button>
+      <button id="updateSet" class="btn" type="button" disabled>Update current set</button>
+      <button id="shareSet" class="btn" type="button">Share / Copy set list</button>
+    </div>
+    <div class="card">
+      <div class="section">Save current set</div>
+      <div class="savebar savedSavebar">
+        <input id="setName" type="text" placeholder="Set name">
+        <select id="setCategory"></select>
+        <button id="saveSet" class="btn primary" type="button">Save</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-saved" class="panel">
+    <div class="card">
+      <div class="savedHeader">
+        <div class="section">Saved Sets</div>
+        <div class="categoryFilterGroup"><select id="savedFilter"></select><button id="savedCategoryManage" class="btn categoryManageBtn" type="button" aria-label="Manage category" hidden>⋯</button></div>
+      </div>
+      <div id="saved"></div>
+      <div class="holdhint">Press and hold a saved set name to edit it.</div>
+    </div>
+    <div class="card">
+      <button id="undoSaved" class="btn" type="button" disabled>Undo last change</button>
+    </div>
+    <div class="card backup">
+      <div class="section">Backup / Restore</div>
+      <div class="actions">
+        <button id="exportBackup" class="btn primary" type="button">Export Backup</button>
+        <button id="importBackup" class="btn" type="button">Import Backup</button>
+        <input id="backupFile" type="file" accept=".json,application/json" style="display:none">
+      </div>
+      <div class="note">Backup includes Repertoire, Current Set, and all Saved Sets.</div>
+    </div>
+    <div class="helpLinkWrap"><button id="openHelp" class="helpLink" type="button">Help</button><span class="helpSep"> · </span><button id="openLanguage" class="helpLink" type="button">Language</button></div>
+  </section>
+</div>
+
+<div id="helpOverlay" class="helpOverlay" hidden>
+  <div class="helpPage">
+    <div class="helpTop"><button id="closeHelp" class="helpBack" type="button">‹ Back</button><div class="helpTopTitle">Help</div><div></div></div>
+    <p class="helpIntro">A quick guide to the main controls. Most everyday actions are available directly from the three main screens.</p>
+    <section class="helpSection"><h2>Repertoire</h2><div class="helpShot"><img src="help-repertoire.png" alt="Repertoire"></div><div class="helpText">
+      <p><b>Repertoire</b> is your complete song library. Search by title or use <b>Category</b> to show one band or project.</p>
+      <p><b>⋯ Category menu</b> — rename a category or clear all songs from it. An empty category can also be deleted.</p>
+      <p><b>+ / ✓</b> adds a song to Current Set or removes it. Tap the <b>Key</b> to change it; the key is optional. Drag <b>≡</b> to change song order.</p>
+      <p><b>Press and hold a song title</b> to edit its title, duration or category. <b>Swipe right</b> to reveal Delete.</p>
+      <p><b>Add song</b> adds one song manually. <b>Add songs as a list</b> lets you paste several songs at once.</p>
+      <p class="helpNote">Deleting a song removes it from Repertoire, Current Set and all Saved Sets.</p>
+    </div></section>
+    <section class="helpSection"><h2>Current Set</h2><div class="helpShot"><img src="help-current.png" alt="Current Set"></div><div class="helpText">
+      <p><b>Current Set</b> shows the set you are working on, including song count and total duration. Drag <b>≡</b> to reorder songs, tap <b>−</b> to remove one, tap a key to change it, or press and hold a song title to edit its details.</p>
+      <p>The name above the songs is the Saved Set currently open. <b>★ Favorite</b> marks that Saved Set as a favorite.</p>
+      <p><b>Undo / Redo</b> steps backward or forward through recent changes. <b>Clear current set</b> removes all songs from Current Set.</p>
+      <p><b>Update current set</b> overwrites the Saved Set currently open. Changes are <b>not saved automatically</b>.</p>
+      <p><b>Share / Copy set list</b> exports a simple text list. <b>Save current set</b> creates a new Saved Set with the name and category you choose.</p>
+    </div></section>
+    <section class="helpSection"><h2>Saved Sets</h2><div class="helpShot"><img src="help-saved.png" alt="Saved Sets"></div><div class="helpText">
+      <p><b>Saved Sets</b> stores your set lists. Tap a set name to open it in Current Set. Each row shows song count and total duration; <b>★</b> marks a favorite.</p>
+      <p><b>Category</b> filters Saved Sets independently from Repertoire categories. <b>⋯ Category menu</b> renames a category or clears it; an empty category can also be deleted.</p>
+      <p><b>Press and hold a set name</b> to rename it or change its category. <b>Share / Copy</b> exports it as text; <b>Delete</b> removes it.</p>
+      <p><b>Undo last change</b> restores the most recent Saved Sets change when available.</p>
+      <p><b>Backup / Restore</b> exports or restores your songs, categories, Current Set and Saved Sets.</p>
+    </div></section>
+    <section class="helpSection"><h2>Gestures</h2><div class="helpGestures">
+      <div class="helpGesture"><b>Tap</b><span>Open, select or change a control.</span></div>
+      <div class="helpGesture"><b>Press and hold</b><span>Edit a song or a saved set.</span></div>
+      <div class="helpGesture"><b>Drag ≡</b><span>Change the order of songs.</span></div>
+      <div class="helpGesture"><b>Swipe right</b><span>Reveal Delete for a Repertoire song.</span></div>
+    </div></section>
+  </div>
+</div>
+
+<div id="languageOverlay" class="pickerOverlay" hidden>
+  <div class="pickerDialog" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
+    <div id="languageTitle" class="pickerTitle">Language</div>
+    <div class="pickerOptions">
+      <button id="languageEnglish" type="button" class="btn pickerOption">English</button>
+      <button id="languageRussian" type="button" class="btn pickerOption">Русский</button>
+    </div>
+    <button id="languageCancel" type="button" class="btn pickerCancel">Cancel</button>
+  </div>
+</div>
+
+<div id="savedEditOverlay" class="savedEditOverlay" hidden>
+  <div class="savedEditDialog" role="dialog" aria-modal="true" aria-labelledby="savedEditHeading">
+    <div id="savedEditHeading" class="savedEditTitle">Edit Saved Set</div>
+    <label for="savedEditName">Set name</label>
+    <input id="savedEditName" type="text" autocomplete="off">
+    <label for="savedEditCategory">Category</label>
+    <select id="savedEditCategory"></select>
+    <button id="savedEditNewCategory" class="btn savedEditNewCat" type="button">New category…</button>
+    <div class="savedEditActions">
+      <button id="savedEditCancel" class="btn" type="button">Cancel</button>
+      <button id="savedEditSave" class="btn primary" type="button">Save</button>
+    </div>
+  </div>
+</div>
+
+
+
+<div id="songDeleteOverlay" class="savedEditOverlay" hidden>
+  <div class="savedEditDialog" role="dialog" aria-modal="true">
+    <div id="songDeleteTitle" class="savedEditTitle">Delete song?</div>
+    <div id="songDeleteText" class="hint" style="margin:10px 0 14px"></div>
+    <div class="undoRedoRow">
+      <button id="songDeleteCancel" type="button">Cancel</button>
+      <button id="songDeleteConfirm" type="button">Delete song</button>
+    </div>
+  </div>
+</div>
+
+
+
+<div id="categoryManageOverlay" class="pickerOverlay" hidden>
+  <div class="pickerDialog" role="dialog" aria-modal="true" aria-labelledby="categoryManageTitle">
+    <div id="categoryManageTitle" class="pickerTitle">Category</div>
+    <div id="categoryManageOptions" class="pickerOptions"></div>
+    <button id="categoryManageCancel" type="button" class="btn pickerCancel">Cancel</button>
+  </div>
+</div>
+
+<div id="accidentalPicker" class="pickerOverlay" hidden>
+  <div class="pickerDialog keyPickerDialog" role="dialog" aria-modal="true" aria-labelledby="accidentalPickerTitle">
+    <div id="accidentalPickerTitle" class="pickerTitle">Key</div>
+    <div class="keyPickerGrid">
+      <button type="button" class="btn pickerOption" data-key="C">C</button>
+      <button type="button" class="btn pickerOption" data-key="C#">C♯</button>
+      <button type="button" class="btn pickerOption" data-key="D">D</button>
+      <button type="button" class="btn pickerOption" data-key="D#">D♯</button>
+      <button type="button" class="btn pickerOption" data-key="E">E</button>
+      <button type="button" class="btn pickerOption" data-key="F">F</button>
+      <button type="button" class="btn pickerOption" data-key="F#">F♯</button>
+      <button type="button" class="btn pickerOption" data-key="G">G</button>
+      <button type="button" class="btn pickerOption" data-key="G#">G♯</button>
+      <button type="button" class="btn pickerOption" data-key="A">A</button>
+      <button type="button" class="btn pickerOption" data-key="A#">A♯</button>
+      <button type="button" class="btn pickerOption" data-key="B">B</button>
+      <button type="button" class="btn pickerOption" data-key="H">H</button>
+      <button type="button" class="btn pickerOption" data-key="Bb">B♭</button>
+      <button type="button" class="btn pickerOption" data-key="Eb">E♭</button>
+      <button type="button" class="btn pickerOption keyNone" data-key="">−</button>
+    </div>
+    <button id="accCancel" type="button" class="btn pickerCancel">Cancel</button>
+  </div>
+</div>
+
+<script>
+const starter=[];
+const fmt=s=>{s=Math.max(0,Math.round(Number(s)||0));const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;return h?`${h}:${String(m).padStart(2,"0")}:${String(x).padStart(2,"0")}`:`${m}:${String(x).padStart(2,"0")}`};
+const clone=x=>JSON.parse(JSON.stringify(x));
+function cancelPendingDeletes(){
+ pendingDeletes.forEach(entry=>clearTimeout(entry.timer));
+ pendingDeletes.clear();
+ document.querySelectorAll(".setrow.pending-delete").forEach(row=>row.classList.remove("pending-delete"));
+}
+const $=id=>document.getElementById(id);
+
+let songs=JSON.parse(localStorage.getItem("setlist_songs")||"null") || [];
+
+const uniqueClean=arr=>[...new Set(arr.map(x=>(x||"").trim()).filter(Boolean))];
+const SYSTEM_CATEGORY="Uncategorised";
+const normalizeCategory=x=>{
+ const c=(x||"").trim();
+ if(!c || c.toLowerCase()==="uncategorized" || c.toLowerCase()==="uncategorised")return SYSTEM_CATEGORY;
+ return c;
+};
+songs=songs.map(s=>({...s,project:normalizeCategory(s.project)}));
+let repCategories=JSON.parse(localStorage.getItem("setlist_rep_categories")||"null");
+if(!Array.isArray(repCategories)){
+ repCategories=uniqueClean([...songs.map(s=>s.project)]);
+}else{
+ repCategories=uniqueClean([...repCategories.map(normalizeCategory),...songs.map(s=>s.project)]);
+}
+
+let main=JSON.parse(localStorage.getItem("setlist_main")||"[]");
+let currentSetName=localStorage.getItem("setlist_current_name")||"";
+let oldEncore=JSON.parse(localStorage.getItem("setlist_encore")||"[]");
+if(oldEncore.length){
+ const ids=new Set(main.map(x=>x.id));
+ oldEncore.forEach(x=>{if(!ids.has(x.id)){main.push({id:x.id});ids.add(x.id)}});
+ oldEncore=[];
+}
+let saved=JSON.parse(localStorage.getItem("setlist_saved")||"[]").map((x,i)=>({
+ id:x.id||("set_"+Date.now()+"_"+i),
+ name:x.name,
+ category:normalizeCategory(x.category),
+ favorite:!!x.favorite,
+ main:[...(x.main||[]),...(x.encore||[])].filter((v,i,a)=>a.findIndex(y=>y.id===v.id)===i)
+}));
+let currentSavedId=localStorage.getItem("setlist_current_saved_id")||"";
+if(!currentSavedId && currentSetName){
+ const linked=saved.find(x=>x.name===currentSetName);
+ if(linked)currentSavedId=linked.id;
+}
+let savedCategories=JSON.parse(localStorage.getItem("setlist_saved_categories")||"null");
+let lastRepFilter=localStorage.getItem("setlist_rep_filter")||"All";
+let lastSavedFilter=localStorage.getItem("setlist_saved_filter")||"All";
+if(!Array.isArray(savedCategories)){
+ savedCategories=uniqueClean([...saved.map(x=>x.category)]);
+}else{
+ savedCategories=uniqueClean([...savedCategories.map(normalizeCategory),...saved.map(x=>x.category)]);
+}
+
+let undoMain=[];
+let redoMain=[];
+const MAX_MAIN_UNDO=10;
+const pendingDeletes=new Map();
+function rememberMainForUndo(){
+ if(!Array.isArray(undoMain))undoMain=[];
+ if(!Array.isArray(redoMain))redoMain=[];
+ undoMain.push({main:clone(main),name:currentSetName,savedId:currentSavedId});
+ if(undoMain.length>MAX_MAIN_UNDO)undoMain.shift();
+ redoMain=[];
+ updateUndoRedoButtons();
+}
+function updateUndoRedoButtons(){
+ const u=$("undoSet");
+ const r=$("redoSet");
+ if(u)u.disabled=!Array.isArray(undoMain)||undoMain.length===0;
+ if(r)r.disabled=!Array.isArray(redoMain)||redoMain.length===0;
+}
+function updateCurrentSetButton(){
+ const b=$("updateSet");
+ if(!b)return;
+ b.disabled=!currentSavedId || !saved.some(x=>x.id===currentSavedId);
+}
+
+let undoSaved=null;
+function rememberSavedForUndo(){
+ undoSaved={saved:clone(saved),categories:clone(savedCategories)};
+ updateSavedUndoButton();
+}
+function updateSavedUndoButton(){
+ const b=$("undoSaved");if(b)b.disabled=!undoSaved;
+}
+
+
+function persist(){
+ localStorage.setItem("setlist_songs",JSON.stringify(songs));
+ localStorage.setItem("setlist_rep_categories",JSON.stringify(repCategories));
+ localStorage.setItem("setlist_main",JSON.stringify(main.map(x=>({id:x.id}))));
+ localStorage.setItem("setlist_current_name",currentSetName);
+ localStorage.setItem("setlist_current_saved_id",currentSavedId);
+ localStorage.setItem("setlist_encore","[]");
+ localStorage.setItem("setlist_saved_categories",JSON.stringify(savedCategories));
+ localStorage.setItem("setlist_saved",JSON.stringify(saved.map(x=>({id:x.id,name:x.name,category:x.category,favorite:!!x.favorite,main:x.main,encore:[]}))));
+}
+const byId=id=>songs.find(s=>s.id===id);
+const inSet=id=>main.some(x=>x.id===id);
+
+const NEW_CATEGORY="__new_category__";
+let currentLanguage=localStorage.getItem("setlist_language")==="ru"?"ru":"en";
+const tr=(en,ru)=>currentLanguage==="ru"?ru:en;
+const categoryLabel=cat=>cat===SYSTEM_CATEGORY?tr("Uncategorized","Без категории"):cat;
+const repFilterCategories=()=>uniqueClean([...repCategories.filter(c=>c!==SYSTEM_CATEGORY),...(songs.some(s=>s.project===SYSTEM_CATEGORY)?[SYSTEM_CATEGORY]:[])]);
+const savedFilterCategories=()=>uniqueClean([...savedCategories.filter(c=>c!==SYSTEM_CATEGORY),...(saved.some(x=>x.category===SYSTEM_CATEGORY)?[SYSTEM_CATEGORY]:[])]);
+const assignmentCategories=categories=>uniqueClean([SYSTEM_CATEGORY,...categories.filter(c=>c!==SYSTEM_CATEGORY)]);
+
+
+function pickCategory(categories,current,{allowNew=true,newPrompt=null}={}){
+ newPrompt=newPrompt||tr("New category name:","Название новой категории:");
+ return new Promise(resolve=>{
+  const overlay=$("categoryPicker"),options=$("pickerOptions");
+  options.innerHTML="";
+  $("pickerTitle").textContent=tr("Category","Категория");
+  const close=value=>{overlay.hidden=true;resolve(value)};
+  categories.forEach(cat=>{
+   const b=document.createElement("button");
+   b.type="button";b.className="btn pickerOption"+(cat===current?" selected":"");
+   b.textContent=(cat===current?"✓ ":"")+categoryLabel(cat);
+   b.onclick=()=>close({category:cat,isNew:false});
+   options.appendChild(b);
+  });
+  if(allowNew){
+   const b=document.createElement("button");
+   b.type="button";b.className="btn pickerOption";
+   b.textContent=tr("＋ New category…","＋ Новая категория…");
+   b.onclick=()=>{
+    overlay.hidden=true;
+    const name=prompt(newPrompt);
+    if(name===null){resolve(null);return}
+    const clean=name.trim();
+    if(!clean){alert(tr("Category name cannot be empty.","Название категории не может быть пустым."));resolve(null);return}
+    resolve({category:clean,isNew:true});
+   };
+   options.appendChild(b);
+  }
+  $("pickerCancel").onclick=()=>close(null);
+  overlay.onclick=e=>{if(e.target===overlay)close(null)};
+  overlay.hidden=false;
+ });
+}
+
+function fillCategorySelect(select,categories,{includeAll=false,includeNew=false,selected=null}={}){
+ const prev=selected!==null?selected:select.value;
+ select.innerHTML="";
+ if(includeAll){
+  const o=document.createElement("option");o.value="All";o.textContent=tr("All","Все");select.appendChild(o);
+ }
+ categories.forEach(cat=>{
+  const o=document.createElement("option");o.value=cat;o.textContent=categoryLabel(cat);select.appendChild(o);
+ });
+ if(includeNew){
+  const o=document.createElement("option");o.value=NEW_CATEGORY;o.textContent=tr("New category…","Новая категория…");select.appendChild(o);
+ }
+ const values=[...select.options].map(o=>o.value);
+ if(values.includes(prev))select.value=prev;
+ else if(includeAll)select.value="All";
+ else if(values.length)select.value=values[0];
+}
+
+function refreshCategoryControls(){
+ fillCategorySelect($("filter"),repFilterCategories(),{includeAll:true,includeNew:true});
+ fillCategorySelect($("newProject"),assignmentCategories(repCategories),{includeNew:true});
+ fillCategorySelect($("bulkProject"),assignmentCategories(repCategories),{includeNew:true});
+ fillCategorySelect($("savedFilter"),savedFilterCategories(),{includeAll:true,includeNew:true});
+ fillCategorySelect($("setCategory"),assignmentCategories(savedCategories),{includeNew:true});
+ const repValues=[...$("filter").options].map(o=>o.value);
+ const savedValues=[...$("savedFilter").options].map(o=>o.value);
+ if(repValues.includes(lastRepFilter))$("filter").value=lastRepFilter;
+ if(savedValues.includes(lastSavedFilter))$("savedFilter").value=lastSavedFilter;
+ updateCategoryManageButtons();
+}
+
+function categoryCanBeManaged(value){
+ return !!value && value!=="All" && value!==NEW_CATEGORY && value!==SYSTEM_CATEGORY;
+}
+function updateCategoryManageButtons(){
+ const rep=$("repCategoryManage"),sav=$("savedCategoryManage");
+ if(rep)rep.hidden=!categoryCanBeManaged($("filter").value);
+ if(sav)sav.hidden=!categoryCanBeManaged($("savedFilter").value);
+}
+
+
+let categoryManageContext=null;
+
+function closeCategoryManage(){
+ $("categoryManageOverlay").hidden=true;
+ categoryManageContext=null;
+}
+
+function renameManagedCategory(kind,oldName){
+ const promptText=kind==="rep"?tr("Rename Repertoire category:","Переименовать категорию репертуара:"):tr("Rename Saved Sets category:","Переименовать категорию сетов:");
+ const name=prompt(promptText,oldName);
+ if(name===null)return;
+ const clean=name.trim();
+ if(!clean){alert(tr("Category name cannot be empty.","Название категории не может быть пустым."));return}
+ if(clean.toLowerCase()===SYSTEM_CATEGORY.toLowerCase()){
+  alert(tr(`${categoryLabel(SYSTEM_CATEGORY)} is a system category and cannot be used as a custom category name.`,`«${categoryLabel(SYSTEM_CATEGORY)}» — системная категория, это название нельзя использовать для пользовательской категории.`));
+  return;
+ }
+ const categories=kind==="rep"?repCategories:savedCategories;
+ const duplicate=categories.find(c=>c.toLowerCase()===clean.toLowerCase() && c!==oldName);
+ if(duplicate){alert(tr("A category with that name already exists.","Категория с таким названием уже существует."));return}
+
+ if(kind==="rep"){
+  repCategories=repCategories.map(c=>c===oldName?clean:c);
+  songs=songs.map(s=>s.project===oldName?{...s,project:clean}:s);
+ }else{
+  rememberSavedForUndo();
+  savedCategories=savedCategories.map(c=>c===oldName?clean:c);
+  saved=saved.map(x=>x.category===oldName?{...x,category:clean}:x);
+ }
+ persist();refreshCategoryControls();
+ const select=kind==="rep"?$("filter"):$("savedFilter");
+ select.value=clean;
+ closeCategoryManage();
+ renderAll();
+}
+
+function clearManagedCategory(kind,name){
+ const count=kind==="rep"
+  ? songs.filter(s=>s.project===name).length
+  : saved.filter(x=>x.category===name).length;
+ if(!count)return;
+ const noun=kind==="rep"?(count===1?"song":"songs"):(count===1?"saved set":"saved sets");
+ if(!confirm(currentLanguage==="ru"?`Переместить ${count} из категории «${name}» в «${categoryLabel(SYSTEM_CATEGORY)}»?`:`Move ${count} ${noun} from "${name}" to ${categoryLabel(SYSTEM_CATEGORY)}?`))return;
+
+ if(kind==="rep"){
+  songs=songs.map(s=>s.project===name?{...s,project:SYSTEM_CATEGORY}:s);
+ }else{
+  rememberSavedForUndo();
+  saved=saved.map(x=>x.category===name?{...x,category:SYSTEM_CATEGORY}:x);
+ }
+ persist();refreshCategoryControls();
+ const select=kind==="rep"?$("filter"):$("savedFilter");
+ select.value=name; // category remains, now empty
+ closeCategoryManage();
+ renderAll();
+}
+
+function deleteManagedCategory(kind,name){
+ const count=kind==="rep"
+  ? songs.filter(s=>s.project===name).length
+  : saved.filter(x=>x.category===name).length;
+ if(count){alert(tr("Only an empty category can be deleted.","Удалить можно только пустую категорию."));return}
+ if(!confirm(tr(`Delete empty category "${name}"?`,`Удалить пустую категорию «${name}»?`)))return;
+
+ if(kind==="rep"){
+  repCategories=repCategories.filter(c=>c!==name);
+ }else{
+  rememberSavedForUndo();
+  savedCategories=savedCategories.filter(c=>c!==name);
+ }
+ persist();refreshCategoryControls();
+ const select=kind==="rep"?$("filter"):$("savedFilter");
+ select.value="All";
+ closeCategoryManage();
+ renderAll();
+}
+
+function openCategoryManage(kind,name){
+ if(!name || name==="All" || name===NEW_CATEGORY || name===SYSTEM_CATEGORY)return;
+ const categories=kind==="rep"?repCategories:savedCategories;
+ if(!categories.includes(name))return;
+
+ categoryManageContext={kind,name};
+ $("categoryManageTitle").textContent=name;
+ const options=$("categoryManageOptions");
+ options.innerHTML="";
+
+ const count=kind==="rep"
+  ? songs.filter(s=>s.project===name).length
+  : saved.filter(x=>x.category===name).length;
+
+ const rename=document.createElement("button");
+ rename.type="button";rename.className="btn pickerOption";rename.textContent=tr("Rename category","Переименовать категорию");
+ rename.onclick=()=>renameManagedCategory(kind,name);
+ options.appendChild(rename);
+
+ const action=document.createElement("button");
+ action.type="button";action.className="btn pickerOption";
+ if(count){
+  action.textContent=tr("Clear entire category","Очистить категорию");
+  action.onclick=()=>clearManagedCategory(kind,name);
+ }else{
+  action.textContent=tr("Delete category","Удалить категорию");
+  action.onclick=()=>deleteManagedCategory(kind,name);
+ }
+ options.appendChild(action);
+
+ $("categoryManageOverlay").hidden=false;
+}
+
+function bindCategoryLongPress(select,kind){
+ let timer=null,moved=false,fired=false;
+ const cancel=()=>{if(timer){clearTimeout(timer);timer=null}};
+ select.addEventListener("touchstart",()=>{
+  moved=false;fired=false;cancel();
+  const value=select.value;
+  if(!value || value==="All" || value===NEW_CATEGORY || value===SYSTEM_CATEGORY)return;
+  timer=setTimeout(()=>{
+   timer=null;
+   if(moved)return;
+   fired=true;
+   select.blur();
+   openCategoryManage(kind,value);
+  },650);
+ },{passive:true});
+ select.addEventListener("touchmove",()=>{moved=true;cancel()},{passive:true});
+ select.addEventListener("touchend",()=>{cancel();setTimeout(()=>{fired=false},500)},{passive:true});
+ select.addEventListener("touchcancel",cancel,{passive:true});
+ select.addEventListener("contextmenu",e=>{
+  const value=select.value;
+  if(value && value!=="All" && value!==NEW_CATEGORY && value!==SYSTEM_CATEGORY){
+   e.preventDefault();
+   openCategoryManage(kind,value);
+  }
+ });
+}
+
+$("categoryManageCancel").onclick=closeCategoryManage;
+$("categoryManageOverlay").onclick=e=>{if(e.target===$("categoryManageOverlay"))closeCategoryManage()};
+
+function createRepCategory(){
+ const name=prompt(tr("New Repertoire category name:","Название новой категории репертуара:"));
+ if(name===null)return null;
+ const clean=name.trim();
+ if(!clean){alert(tr("Category name cannot be empty.","Название категории не может быть пустым."));return null}
+ if(clean.toLowerCase()==="uncategorized" || clean.toLowerCase()==="uncategorised")return SYSTEM_CATEGORY;
+ const existing=repCategories.find(x=>x.toLowerCase()===clean.toLowerCase());
+ if(existing)return existing;
+ repCategories.push(clean);persist();refreshCategoryControls();return clean;
+}
+
+function createSavedCategory(){
+ const name=prompt(tr("New Saved Sets category name:","Название новой категории сетов:"));
+ if(name===null)return null;
+ const clean=name.trim();
+ if(!clean){alert(tr("Category name cannot be empty.","Название категории не может быть пустым."));return null}
+ if(clean.toLowerCase()==="uncategorized" || clean.toLowerCase()==="uncategorised")return SYSTEM_CATEGORY;
+ const existing=savedCategories.find(x=>x.toLowerCase()===clean.toLowerCase());
+ if(existing)return existing;
+ rememberSavedForUndo();
+ savedCategories.push(clean);persist();refreshCategoryControls();return clean;
+}
+
+function currentSetPlainText(){
+ const total=main.reduce((n,x)=>n+(byId(x.id)?.duration||0),0);
+ const title=currentSetName||"Set List";
+ const lines=main.map((x,i)=>`${i+1}. ${byId(x.id)?.title||tr("Unknown song","Неизвестная песня")}`);
+ return `${title}\n${main.length} ${tr("songs","песен")} · ${tr("Total","Всего")} ${fmt(total)}\n\n${lines.join("\n")}`;
+}
+
+function summary(){
+ const total=main.reduce((n,x)=>n+(byId(x.id)?.duration||0),0);
+ $("total").textContent=fmt(total);
+ $("count").textContent=main.length;
+ $("repTotal").textContent=fmt(total);
+ $("repCount").textContent=main.length;
+ $("currentSetName").textContent=currentSetName;
+ $("currentSetNameBar").hidden=!currentSetName;
+
+ const favoriteButton=$("currentSetFavorite");
+ const linked=currentSavedId ? saved.find(x=>x.id===currentSavedId) : null;
+ if(favoriteButton){
+  favoriteButton.hidden=!linked;
+  favoriteButton.textContent="★";
+  favoriteButton.classList.toggle("inactive",!!linked&&!linked.favorite);
+  favoriteButton.setAttribute("aria-label",linked&&linked.favorite?"Remove star from saved set":"Mark saved set with a star");
+  favoriteButton.title=linked&&linked.favorite?"Remove star from saved set":"Mark saved set with a star";
+ }
+}
+
+function confirmSongDelete(song){
+ return new Promise(resolve=>{
+  const ov=$("songDeleteOverlay");
+  $("songDeleteTitle").textContent=tr(`Delete “${song.title}”?`,`Удалить «${song.title}»?`);
+  $("songDeleteText").textContent=tr("This song will be removed from Repertoire, Current Set and all Saved Sets.","Песня будет удалена из Репертуара, Текущего сета и всех Сохранённых сетов.");
+  ov.hidden=false;
+  const close=value=>{
+   ov.hidden=true;
+   $("songDeleteCancel").onclick=null;
+   $("songDeleteConfirm").onclick=null;
+   ov.onclick=null;
+   resolve(value);
+  };
+  $("songDeleteCancel").onclick=()=>close(false);
+  $("songDeleteConfirm").onclick=()=>close(true);
+  ov.onclick=e=>{if(e.target===ov)close(false)};
+ });
+}
+function deleteSongEverywhere(id){
+ cancelPendingDeletes();
+ if(main.some(x=>x.id===id))rememberMainForUndo();
+ if(saved.some(set=>(set.main||[]).some(x=>x.id===id)))rememberSavedForUndo();
+ main=main.filter(x=>x.id!==id);
+ saved=saved.map(set=>({...set,main:(set.main||[]).filter(x=>x.id!==id)}));
+ songs=songs.filter(s=>s.id!==id);
+ persist();refreshCategoryControls();renderAll();
+}
+async function editSong(id){
+ const s=byId(id); if(!s)return;
+ const title=prompt(tr("Song title:","Название песни:"),s.title); if(title===null)return;
+ const cleanTitle=title.trim(); if(!cleanTitle){alert(tr("Song title cannot be empty.","Название песни не может быть пустым."));return}
+ const minText=prompt(tr("Minutes:","Минуты:"),String(Math.floor(s.duration/60))); if(minText===null)return;
+ const secText=prompt(tr("Seconds (0–59):","Секунды (0–59):"),String(s.duration%60)); if(secText===null)return;
+ const min=Number(minText),sec=Number(secText);
+ if(!Number.isInteger(min)||min<0||!Number.isInteger(sec)||sec<0||sec>59){alert(tr("Invalid duration.","Некорректная длительность."));return}
+ await new Promise(resolve=>setTimeout(resolve,350));
+ const key=await chooseKey(s.key||""); if(key===null)return;
+ const picked=await pickCategory(repCategories,s.project,{newPrompt:tr("New Repertoire category name:","Название новой категории репертуара:")});
+ if(!picked)return;
+ let project=repCategories.find(x=>x.toLowerCase()===picked.category.toLowerCase());
+ if(!project){repCategories.push(picked.category);project=picked.category}
+
+ s.title=cleanTitle;s.duration=min*60+sec;s.key=key;s.project=project;
+ persist();refreshCategoryControls();renderAll();
+}
+function toggleSet(id){
+ rememberMainForUndo();
+ const i=main.findIndex(x=>x.id===id);
+ if(i>=0)main.splice(i,1); else main.push({id});
+ persist();renderAll();
+}
+function bindLongPress(el,id){
+ let timer=null,moved=false;
+ const start=()=>{moved=false;timer=setTimeout(()=>{timer=null;if(!moved)editSong(id)},600)};
+ const cancel=()=>{if(timer){clearTimeout(timer);timer=null}};
+ el.addEventListener("touchstart",start,{passive:true});
+ el.addEventListener("touchmove",()=>{moved=true;cancel()},{passive:true});
+ el.addEventListener("touchend",cancel,{passive:true});
+ el.addEventListener("touchcancel",cancel,{passive:true});
+ el.addEventListener("contextmenu",e=>{e.preventDefault();editSong(id)});
+}
+function bindLongPressAction(el,action){
+ let timer=null,moved=false,fired=false;
+ const runOnce=()=>{
+  if(fired||moved)return;
+  fired=true;
+  action();
+ };
+ const start=()=>{
+  moved=false;
+  fired=false;
+  if(timer)clearTimeout(timer);
+  timer=setTimeout(()=>{timer=null;runOnce()},600);
+ };
+ const cancelTimer=()=>{
+  if(timer){clearTimeout(timer);timer=null}
+ };
+ el.addEventListener("touchstart",start,{passive:true});
+ el.addEventListener("touchmove",()=>{moved=true;cancelTimer()},{passive:true});
+ el.addEventListener("touchend",()=>{cancelTimer();setTimeout(()=>{fired=false},700)},{passive:true});
+ el.addEventListener("touchcancel",()=>{cancelTimer();fired=false},{passive:true});
+ el.addEventListener("contextmenu",e=>{
+  e.preventDefault();
+  cancelTimer();
+  runOnce();
+ });
+}
+function reorderVisibleSongs(visibleIds){
+ const visibleSet=new Set(visibleIds),slots=[];
+ songs.forEach((s,i)=>{if(visibleSet.has(s.id))slots.push(i)});
+ if(slots.length!==visibleIds.length)return;
+ const map=new Map(songs.map(s=>[s.id,s]));
+ slots.forEach((slot,i)=>{songs[slot]=map.get(visibleIds[i])});
+ persist();renderRep();
+}
+function enableHandleDrag(handle,row,host,onFinish,onStart){
+ let active=false;
+
+ // Repertoire rows live inside .repSwipeWrap because of swipe-to-delete.
+ // Current Set rows are direct children of their host.
+ const dragUnit=()=>row.parentElement && row.parentElement.classList.contains("repSwipeWrap")
+   ? row.parentElement
+   : row;
+
+ const moveRowToPoint=(x,y)=>{
+  const targetEl=document.elementFromPoint(x,y);
+  const target=targetEl && targetEl.closest ? targetEl.closest(".row, .setrow") : null;
+  if(!target || target===row)return;
+
+  const targetUnit=target.parentElement && target.parentElement.classList.contains("repSwipeWrap")
+    ? target.parentElement
+    : target;
+
+  const unit=dragUnit();
+  if(targetUnit===unit || targetUnit.parentElement!==host)return;
+
+  const b=targetUnit.getBoundingClientRect();
+  if(y < b.top + b.height/2) host.insertBefore(unit,targetUnit);
+  else host.insertBefore(unit,targetUnit.nextSibling);
+ };
+
+ // iPhone / iPad Safari
+ handle.addEventListener("touchstart",e=>{
+  active=true;
+  if(onStart)onStart();
+  row.classList.add("dragging");
+  e.preventDefault();
+ },{passive:false});
+
+ handle.addEventListener("touchmove",e=>{
+  if(!active || !e.touches.length)return;
+  const t=e.touches[0];
+  moveRowToPoint(t.clientX,t.clientY);
+  e.preventDefault();
+ },{passive:false});
+
+ const finishTouch=e=>{
+  if(!active)return;
+  active=false;
+  row.classList.remove("dragging");
+  onFinish();
+  e.preventDefault();
+ };
+ handle.addEventListener("touchend",finishTouch,{passive:false});
+ handle.addEventListener("touchcancel",finishTouch,{passive:false});
+
+ // Desktop / mouse fallback
+ handle.draggable=true;
+ handle.addEventListener("dragstart",e=>{
+  active=true;
+  if(onStart)onStart();
+  row.classList.add("dragging");
+  if(e.dataTransfer){
+    e.dataTransfer.effectAllowed="move";
+    try{e.dataTransfer.setData("text/plain","move")}catch(_){}
+  }
+ });
+ host.addEventListener("dragover",e=>{
+  if(!active)return;
+  e.preventDefault();
+  moveRowToPoint(e.clientX,e.clientY);
+ });
+ handle.addEventListener("dragend",()=>{
+  if(!active)return;
+  active=false;
+  row.classList.remove("dragging");
+  onFinish();
+ });
+}
+
+let openRepSwipe=null;
+
+function closeOpenRepSwipe(){
+ if(openRepSwipe){
+  openRepSwipe.classList.remove("open");
+  openRepSwipe=null;
+ }
+}
+
+function bindRepSwipe(wrap,row,song){
+ const MAX=92,THRESHOLD=34;
+ let startX=0,startY=0,lastX=0,tracking=false,dragging=false,wasOpen=false;
+
+ row.addEventListener("touchstart",e=>{
+  if(e.touches.length!==1)return;
+  if(openRepSwipe && openRepSwipe!==wrap)closeOpenRepSwipe();
+  startX=lastX=e.touches[0].clientX;
+  startY=e.touches[0].clientY;
+  wasOpen=wrap.classList.contains("open");
+  tracking=true;dragging=false;
+  row.style.transition="none";
+ },{passive:true});
+
+ row.addEventListener("touchmove",e=>{
+  if(!tracking || e.touches.length!==1)return;
+  lastX=e.touches[0].clientX;
+  const dx=lastX-startX;
+  const dy=e.touches[0].clientY-startY;
+
+  if(Math.abs(dy)>Math.abs(dx) && Math.abs(dy)>8){
+   tracking=false;
+   row.style.transition="";
+   row.style.transform="";
+   return;
+  }
+
+  if(Math.abs(dx)>6){
+   dragging=true;
+   if(Math.abs(dx)>Math.abs(dy))wrap.classList.add("swiping");
+  }
+  let pos=(wasOpen?MAX:0)+dx;
+  pos=Math.max(0,Math.min(MAX,pos));
+  row.style.transform=`translateX(${pos}px)`;
+  if(Math.abs(dx)>8)e.preventDefault();
+ },{passive:false});
+
+ row.addEventListener("touchend",()=>{
+  if(!tracking){
+   row.style.transition="";
+   row.style.transform="";
+   wrap.classList.remove("swiping");
+   return;
+  }
+  const dx=lastX-startX;
+  row.style.transition="";
+  row.style.transform="";
+
+  const shouldOpen = wasOpen ? dx>-THRESHOLD : dx>THRESHOLD;
+  wrap.classList.toggle("open",shouldOpen);
+  wrap.classList.remove("swiping");
+  openRepSwipe=shouldOpen?wrap:null;
+  tracking=false;
+ },{passive:true});
+
+ row.addEventListener("click",e=>{
+  if(wrap.classList.contains("open") && !dragging){
+   e.preventDefault();
+   e.stopPropagation();
+   closeOpenRepSwipe();
+  }
+ },true);
+}
+
+
+let accidentalSongId=null;
+let keyPickerResolve=null;
+
+function keyDisplayHTML(raw){
+ const k=(raw||"").trim();
+ if(!k)return "";
+ const base=baseKeyLetter(k);
+ if(!base)return "";
+ let acc="";
+ if(k.includes("#")||k.includes("♯"))acc="♯";
+ else if(k.includes("b")||k.includes("♭"))acc="♭";
+ return `<span class="keyBase">${base}</span>${acc?`<span class="keyAcc">${acc}</span>`:""}`;
+}
+
+function baseKeyLetter(raw){
+ const k=(raw||"").trim();
+ const m=k.match(/[A-GHagh]/);
+ return m ? m[0].toUpperCase() : "";
+}
+
+function openKeyPickerForSong(songId){
+ accidentalSongId=songId;
+ keyPickerResolve=null;
+ $("accidentalPicker").hidden=false;
+}
+
+function chooseKey(current=""){
+ return new Promise(resolve=>{
+  accidentalSongId=null;
+  keyPickerResolve=resolve;
+  $("accidentalPicker").hidden=false;
+ });
+}
+
+function closeAccidentalPicker(cancelled=true){
+ $("accidentalPicker").hidden=true;
+ accidentalSongId=null;
+ if(keyPickerResolve){
+  const resolve=keyPickerResolve;
+  keyPickerResolve=null;
+  if(cancelled)resolve(null);
+ }
+}
+
+function setPickedKey(value){
+ if(accidentalSongId){
+  const s=byId(accidentalSongId);
+  if(s){
+   s.key=value;
+   persist();
+   renderAll();
+  }
+  $("accidentalPicker").hidden=true;
+  accidentalSongId=null;
+  return;
+ }
+ if(keyPickerResolve){
+  const resolve=keyPickerResolve;
+  keyPickerResolve=null;
+  $("accidentalPicker").hidden=true;
+  resolve(value);
+ }
+}
+
+function bindKeyTap(el,songId){
+ if(!el)return;
+ el.classList.add("keyTap");
+ el.addEventListener("click",e=>{
+  e.preventDefault();
+  e.stopPropagation();
+  openKeyPickerForSong(songId);
+ });
+ el.addEventListener("touchstart",e=>e.stopPropagation(),{passive:true});
+}
+
+function renderRep(){
+ openRepSwipe=null;
+ const q=$("search").value.trim().toLowerCase(),f=$("filter").value,host=$("rep");
+ host.innerHTML="";
+ const list=songs.filter(s=>(f==="All"||s.project===f)&&s.title.toLowerCase().includes(q));
+ if(!list.length){host.innerHTML=`<div class="empty">${tr("No songs found","Песни не найдены")}</div>`;return}
+ list.forEach(s=>{
+  const row=document.createElement("div");row.className="row";row.dataset.id=s.id;
+  row.innerHTML='<div class="songline"><div class="title"></div><div class="duration"></div></div><div class="songkey"></div><div class="handle" title="Drag">≡</div><button class="btn toggle" type="button"></button>';
+  const title=row.querySelector(".title"),btn=row.querySelector(".toggle"),handle=row.querySelector(".handle");
+  title.textContent=s.title;
+  row.querySelector(".duration").textContent=fmt(s.duration);
+  row.querySelector(".songkey").innerHTML=keyDisplayHTML(s.key);
+  bindKeyTap(row.querySelector(".songkey"),s.id);
+  const selected=inSet(s.id);
+  btn.textContent=selected?"✓":"+";
+  btn.classList.toggle("inset",selected);
+  btn.setAttribute("aria-label",selected?"Remove from Current Set":"Add to Current Set");
+  btn.onclick=()=>toggleSet(s.id);
+  bindLongPressAction(title,()=>{
+   void editSong(s.id);
+  });
+  enableHandleDrag(handle,row,host,()=>{
+    const visibleIds=[...host.querySelectorAll(".row")].map(r=>r.dataset.id);
+    reorderVisibleSongs(visibleIds);
+  });
+  const swipeWrap=document.createElement("div");
+  swipeWrap.className="repSwipeWrap";
+
+  const del=document.createElement("button");
+  del.type="button";
+  del.className="repSwipeDelete";
+  del.textContent=tr("Delete","Удалить");
+  del.onclick=async e=>{
+   e.stopPropagation();
+   closeOpenRepSwipe();
+   if(await confirmSongDelete(s))deleteSongEverywhere(s.id);
+  };
+
+  swipeWrap.appendChild(del);
+  swipeWrap.appendChild(row);
+  host.appendChild(swipeWrap);
+  bindRepSwipe(swipeWrap,row,s);
+ });
+}
+function renderSet(){
+ const host=$("main");host.innerHTML="";
+ if(!main.length){host.innerHTML=`<div class="empty">${tr("Current Set is empty","Текущий сет пуст")}</div>`;return}
+ main.forEach((item,i)=>{
+  const s=byId(item.id);if(!s)return;
+  const row=document.createElement("div");row.className="setrow";row.dataset.id=s.id;
+  row.innerHTML='<div class="num"></div><div class="songline"><div class="title"></div><div class="duration"></div></div><div class="songkey"></div><button class="btn remove" type="button" aria-label="Remove from Current Set">−</button><div class="handle" title="Drag">≡</div>';
+  row.querySelector(".num").textContent=i+1;
+  row.querySelector(".title").textContent=s.title;
+  row.querySelector(".duration").textContent=fmt(s.duration);
+  row.querySelector(".songkey").innerHTML=keyDisplayHTML(s.key);
+  bindKeyTap(row.querySelector(".songkey"),s.id);
+  bindLongPressAction(row.querySelector(".title"),()=>{
+   void editSong(s.id);
+  });
+  row.querySelector(".remove").onclick=()=>{
+   const existing=pendingDeletes.get(s.id);
+   if(existing){
+    clearTimeout(existing.timer);
+    pendingDeletes.delete(s.id);
+    row.classList.remove("pending-delete");
+    return;
+   }
+   row.classList.add("pending-delete");
+   const timer=setTimeout(()=>{
+    pendingDeletes.delete(s.id);
+    const pos=main.findIndex(x=>x.id===s.id);
+    if(pos<0)return;
+    rememberMainForUndo();
+    main.splice(pos,1);
+    persist();renderAll();
+   },1000);
+   pendingDeletes.set(s.id,{timer,row});
+  };
+  const handle=row.querySelector(".handle");
+  enableHandleDrag(handle,row,host,()=>{
+   const ids=[...host.querySelectorAll(".setrow")].map(r=>r.dataset.id);
+   main=ids.map(id=>({id}));
+   persist();
+   renderAll();
+  },rememberMainForUndo);
+  host.appendChild(row);
+ });
+}
+let savedSetBeingEditedId=null;
+
+function openSavedSetEditor(index){
+ const x=saved[index];
+ if(!x)return;
+
+ const overlay=$("savedEditOverlay");
+ const nameInput=$("savedEditName");
+ const categorySelect=$("savedEditCategory");
+
+ savedSetBeingEditedId=x.id;
+ nameInput.value=x.name||"";
+ categorySelect.innerHTML="";
+
+ savedCategories.forEach(cat=>{
+  const o=document.createElement("option");
+  o.value=cat;o.textContent=categoryLabel(cat);
+  categorySelect.appendChild(o);
+ });
+
+ const currentCategory=x.category||SYSTEM_CATEGORY;
+ if(![...categorySelect.options].some(o=>o.value===currentCategory)){
+  const o=document.createElement("option");
+  o.value=currentCategory;o.textContent=categoryLabel(currentCategory);
+  categorySelect.appendChild(o);
+ }
+ categorySelect.value=currentCategory;
+
+ overlay.hidden=false;
+ nameInput.blur();
+ if(window.visualViewport)syncSavedEditorViewport();
+}
+
+function syncSavedEditorViewport(){
+ const overlay=$("savedEditOverlay");
+ if(!overlay || overlay.hidden)return;
+ const vv=window.visualViewport;
+ if(vv){
+  overlay.style.top=vv.offsetTop+"px";
+  overlay.style.height=vv.height+"px";
+ }else{
+  overlay.style.top="0px";
+  overlay.style.height="100dvh";
+ }
+}
+
+function closeSavedSetEditor(){
+ $("savedEditOverlay").hidden=true;
+ $("savedEditOverlay").style.top="";
+ $("savedEditOverlay").style.height="";
+ savedSetBeingEditedId=null;
+}
+
+if(window.visualViewport){
+ visualViewport.addEventListener("resize",syncSavedEditorViewport);
+ visualViewport.addEventListener("scroll",syncSavedEditorViewport);
+}
+
+$("savedEditCancel").onclick=closeSavedSetEditor;
+$("savedEditOverlay").onclick=e=>{
+ if(e.target===$("savedEditOverlay"))closeSavedSetEditor();
+};
+
+$("savedEditNewCategory").onclick=()=>{
+ const name=prompt(tr("New Saved Sets category name:","Название новой категории сетов:"));
+ if(name===null)return;
+ const clean=name.trim();
+ if(!clean){alert(tr("Category name cannot be empty.","Название категории не может быть пустым."));return}
+
+ let category=(clean.toLowerCase()==="uncategorized" || clean.toLowerCase()==="uncategorised")
+  ? SYSTEM_CATEGORY
+  : savedCategories.find(c=>c.toLowerCase()===clean.toLowerCase());
+ if(!category){
+  category=clean;
+  savedCategories.push(category);
+  persist();
+  refreshCategoryControls();
+ }
+
+ const select=$("savedEditCategory");
+ if(![...select.options].some(o=>o.value===category)){
+  const o=document.createElement("option");
+  o.value=category;o.textContent=categoryLabel(category);
+  select.appendChild(o);
+ }
+ select.value=category;
+};
+
+$("savedEditSave").onclick=()=>{
+ if(!savedSetBeingEditedId)return;
+
+ const x=saved.find(s=>s.id===savedSetBeingEditedId);
+ if(!x){closeSavedSetEditor();return}
+
+ const cleanName=$("savedEditName").value.trim();
+ if(!cleanName){
+  alert(tr("Saved set name cannot be empty.","Название сета не может быть пустым."));
+  $("savedEditName").focus();
+  return;
+ }
+
+ const category=$("savedEditCategory").value||SYSTEM_CATEGORY;
+
+ rememberSavedForUndo();
+ x.name=cleanName;
+ x.category=category;
+
+ if(currentSavedId===x.id)currentSetName=cleanName;
+
+ persist();
+ refreshCategoryControls();
+ closeSavedSetEditor();
+ renderAll();
+};
+
+$("savedEditName").addEventListener("keydown",e=>{
+ if(e.key==="Enter"){
+  e.preventDefault();
+  $("savedEditSave").click();
+ }else if(e.key==="Escape"){
+  closeSavedSetEditor();
+ }
+});
+
+
+function renderSaved(){
+ const host=$("saved");host.innerHTML="";
+ const f=$("savedFilter").value||"All";
+ const indexes=saved.map((x,i)=>({x,i})).filter(v=>f==="All"||v.x.category===f);
+ if(!indexes.length){host.innerHTML=`<div class="empty">${tr("No saved sets in this category","В этой категории нет сохранённых сетов")}</div>`;return}
+ indexes.forEach(({x,i})=>{
+  const row=document.createElement("div");row.className="savedrow";
+  row.innerHTML=`<div class="savedopen" role="button" tabindex="0"><div class="savedTitleLine"><div class="title"></div><span class="savedFavoriteMark" aria-hidden="true" hidden>★</span></div><div class="meta"></div></div><button class="btn savedmini share">${tr("Share / Copy","Поделиться / Копировать")}</button><button class="btn savedmini del">${tr("Delete","Удалить")}</button>`;
+  const title=row.querySelector(".title");
+  title.textContent=x.name;
+  row.querySelector(".savedFavoriteMark").hidden=!x.favorite;
+  const savedTotal=x.main.reduce((n,item)=>n+(byId(item.id)?.duration||0),0);
+  row.querySelector(".meta").textContent=`${x.main.length} ${tr("songs","песен")} · ${tr("Total","Всего")} ${fmt(savedTotal)}`;
+
+  let suppressOpenUntil=0;
+  const openSet=()=>{
+   if(Date.now()<suppressOpenUntil)return;
+   cancelPendingDeletes();rememberMainForUndo();main=clone(x.main);currentSetName=x.name;currentSavedId=x.id;persist();switchTab("set");renderAll();
+  };
+  const open=row.querySelector(".savedopen");
+  open.onclick=openSet;
+  open.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openSet()}};
+
+  bindLongPressAction(title,()=>{
+   suppressOpenUntil=Date.now()+900;
+   openSavedSetEditor(i);
+  });
+
+  row.querySelector(".share").onclick=async()=>{
+   const total=x.main.reduce((n,item)=>n+(byId(item.id)?.duration||0),0);
+   const lines=x.main.map((item,j)=>`${j+1}. ${byId(item.id)?.title||"Unknown song"}`);
+   const text=`${x.name}\n${x.main.length} songs · Total ${fmt(total)}\n\n${lines.join("\n")}`;
+   try{
+    if(navigator.share){
+     await navigator.share({title:x.name,text});
+     return;
+    }
+   }catch(err){
+    if(err && err.name==="AbortError")return;
+   }
+   try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+     await navigator.clipboard.writeText(text);
+     alert(tr("Set list copied to clipboard.","Сет-лист скопирован."));
+     return;
+    }
+   }catch(err){}
+   const ta=document.createElement("textarea");
+   ta.value=text;
+   ta.style.position="fixed";
+   ta.style.opacity="0";
+   document.body.appendChild(ta);
+   ta.focus();ta.select();
+   const ok=document.execCommand("copy");
+   ta.remove();
+   alert(ok?tr("Set list copied to clipboard.","Сет-лист скопирован."):tr("Could not copy the set list.","Не удалось скопировать сет-лист."));
+  };
+  row.querySelector(".del").onclick=()=>{
+   if(confirm(tr("Delete this saved set?","Удалить этот сохранённый сет?"))){
+    rememberSavedForUndo();
+    const deletedId=saved[i].id;
+    saved.splice(i,1);
+    if(currentSavedId===deletedId)currentSavedId="";
+    persist();renderAll();
+   }
+  };
+  host.appendChild(row);
+ });
+}
+function switchTab(name){
+ document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
+ document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id==="panel-"+name));
+}
+function renderAll(){renderRep();renderSet();renderSaved();summary();updateUndoRedoButtons();updateSavedUndoButton();updateCurrentSetButton()}
+
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+$("search").oninput=renderRep;
+$("repCategoryManage").onclick=()=>{
+ const value=$("filter").value;
+ if(categoryCanBeManaged(value))openCategoryManage("rep",value);
+};
+$("savedCategoryManage").onclick=()=>{
+ const value=$("savedFilter").value;
+ if(categoryCanBeManaged(value))openCategoryManage("saved",value);
+};
+
+$("filter").onchange=()=>{
+ if($("filter").value===NEW_CATEGORY){
+  const cat=createRepCategory();
+  refreshCategoryControls();
+  $("filter").value=cat||"All";
+ }
+ lastRepFilter=$("filter").value;
+ localStorage.setItem("setlist_rep_filter",lastRepFilter);
+ updateCategoryManageButtons();
+ renderRep();
+};
+$("savedFilter").onchange=()=>{
+ if($("savedFilter").value===NEW_CATEGORY){
+  const cat=createSavedCategory();
+  refreshCategoryControls();
+  $("savedFilter").value=cat||"All";
+ }
+ lastSavedFilter=$("savedFilter").value;
+ localStorage.setItem("setlist_saved_filter",lastSavedFilter);
+ updateCategoryManageButtons();
+ renderSaved();updateSavedUndoButton();
+};
+$("setCategory").onchange=()=>{
+ if($("setCategory").value!==NEW_CATEGORY)return;
+ const cat=createSavedCategory();
+ refreshCategoryControls();
+ $("setCategory").value=cat||SYSTEM_CATEGORY;
+};
+$("newProject").onchange=()=>{
+ if($("newProject").value!==NEW_CATEGORY)return;
+ const cat=createRepCategory();
+ refreshCategoryControls();
+ $("newProject").value=cat||repCategories[0]||"";
+};
+$("bulkProject").onchange=()=>{
+ if($("bulkProject").value!==NEW_CATEGORY)return;
+ const cat=createRepCategory();
+ refreshCategoryControls();
+ $("bulkProject").value=cat||repCategories[0]||"";
+};
+
+
+
+$("newKey").onclick=async ()=>{
+ const key=await chooseKey($("newKey").dataset.value||"");
+ if(key===null)return;
+ $("newKey").dataset.value=key;
+ $("newKey").innerHTML=key ? keyDisplayHTML(key) : "Key";
+};
+
+$("addForm").onsubmit=e=>{
+ e.preventDefault();
+ const title=$("newTitle").value.trim();
+ const minText=$("newMin").value.trim(),secText=$("newSec").value.trim();
+ const min=minText===""?0:Number(minText);
+ const sec=secText===""?0:Number(secText);
+ if(!title||!Number.isInteger(min)||!Number.isInteger(sec)||min<0||sec<0||sec>59)return;
+ const key=$("newKey").dataset.value||"";
+ songs.push({id:"s"+Date.now(),title,duration:min*60+sec,key,project:$("newProject").value});
+ $("newTitle").value="";$("newMin").value="";$("newSec").value="";
+ $("newKey").dataset.value="";$("newKey").textContent=tr("Key","Тональность");
+ persist();renderRep();
+};
+$("bulkAdd").onclick=()=>{
+ const text=$("bulkText").value.trim();
+ if(!text){$("bulkResult").textContent=tr("Paste a list of songs.","Вставьте список песен.");return}
+ const project=$("bulkProject").value;
+ const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+ let added=0;
+ const skipped=[];
+ const failedLines=[];
+
+ lines.forEach((line,i)=>{
+  // Find the first mm:ss / m:ss time anywhere in the line.
+  // This is deliberately tolerant of different dash characters and spacing.
+  const m=line.match(/^(.*?)\s*(?:[—–-]\s*)?(\d{1,2}):([0-5]?\d)(.*)$/);
+  if(!m){
+   skipped.push(i+1);failedLines.push(line);return;
+  }
+
+  const title=m[1].trim().replace(/[—–-]\s*$/,"").trim();
+  const min=Number(m[2]),sec=Number(m[3]);
+  if(!title || !Number.isInteger(min) || !Number.isInteger(sec) || sec<0 || sec>59){
+   skipped.push(i+1);failedLines.push(line);return;
+  }
+
+  // Anything after the time is optional key text; trim common separators.
+  let key=(m[4]||"").trim().replace(/^[—–-]+\s*/,"").trim();
+  const normalized=key.replace("♯","#").replace("♭","b");
+  const allowedKeys=["C","C#","D","D#","E","F","F#","G","G#","A","A#","B","H","Bb","Eb"];
+  key=allowedKeys.find(x=>x.toLowerCase()===normalized.toLowerCase()) || "";
+
+  songs.push({
+   id:"s"+Date.now()+"_"+i+"_"+Math.random().toString(36).slice(2,7),
+   title,
+   duration:min*60+sec,
+   key,
+   project
+  });
+  added++;
+ });
+
+ if(added){
+  persist();
+  renderRep();
+ }
+ // On partial success, leave only failed lines in the box so they can be corrected.
+ $("bulkText").value=failedLines.join("\n");
+ $("bulkResult").textContent=skipped.length
+  ? tr(`Added: ${added}. Unrecognized lines: ${skipped.join(", ")}.`,`Добавлено: ${added}. Не распознаны строки: ${skipped.join(", ")}.`)
+  : tr(`Songs added: ${added}.`,`Добавлено песен: ${added}.`);
+};
+
+$("currentSetFavorite").onclick=e=>{
+ e.preventDefault();
+ e.stopPropagation();
+ if(!currentSavedId)return;
+ const target=saved.find(x=>x.id===currentSavedId);
+ if(!target)return;
+ rememberSavedForUndo();
+ target.favorite=!target.favorite;
+ persist();
+ summary();
+ renderSaved();
+ updateSavedUndoButton();
+};
+
+(()=>{
+ const el=$("currentSetName");
+ let timer=null,moved=false;
+ const run=()=>{
+  if(!currentSavedId)return;
+  const index=saved.findIndex(x=>x.id===currentSavedId);
+  if(index<0)return;
+  openSavedSetEditor(index);
+ };
+ el.addEventListener("touchstart",e=>{
+  moved=false;
+  if(timer)clearTimeout(timer);
+  timer=setTimeout(()=>{timer=null;if(!moved)run()},500);
+  e.preventDefault();
+ },{passive:false});
+ el.addEventListener("touchmove",e=>{
+  moved=true;
+  if(timer){clearTimeout(timer);timer=null}
+ },{passive:true});
+ const cancel=()=>{if(timer){clearTimeout(timer);timer=null}};
+ el.addEventListener("touchend",cancel,{passive:true});
+ el.addEventListener("touchcancel",cancel,{passive:true});
+ el.addEventListener("contextmenu",e=>{e.preventDefault();run()});
+})();
+
+$("undoSaved").onclick=()=>{
+ if(!undoSaved)return;
+ saved=clone(undoSaved.saved);
+ savedCategories=clone(undoSaved.categories);
+ undoSaved=null;
+ persist();refreshCategoryControls();renderAll();
+};
+
+$("undoSet").onclick=()=>{
+ cancelPendingDeletes();
+ if(!Array.isArray(undoMain) || undoMain.length===0){
+  updateUndoRedoButtons();
+  return;
+ }
+ if(!Array.isArray(redoMain))redoMain=[];
+ redoMain.push({main:clone(main),name:currentSetName,savedId:currentSavedId});
+ if(redoMain.length>MAX_MAIN_UNDO)redoMain.shift();
+
+ const state=undoMain.pop();
+ main=clone(state.main);
+ currentSetName=state.name||"";
+ currentSavedId=state.savedId||"";
+ persist();
+ renderAll();
+ updateUndoRedoButtons();
+};
+
+$("redoSet").onclick=()=>{
+ cancelPendingDeletes();
+ if(!Array.isArray(redoMain) || redoMain.length===0){
+  updateUndoRedoButtons();
+  return;
+ }
+ if(!Array.isArray(undoMain))undoMain=[];
+ undoMain.push({main:clone(main),name:currentSetName,savedId:currentSavedId});
+ if(undoMain.length>MAX_MAIN_UNDO)undoMain.shift();
+
+ const state=redoMain.pop();
+ main=clone(state.main);
+ currentSetName=state.name||"";
+ currentSavedId=state.savedId||"";
+ persist();
+ renderAll();
+ updateUndoRedoButtons();
+};
+$("shareSet").onclick=async()=>{
+ if(!main.length){alert(tr("Current Set is empty.","Текущий сет пуст."));return}
+ const text=currentSetPlainText();
+ try{
+  if(navigator.share){
+   await navigator.share({title:currentSetName||"Set List",text});
+   return;
+  }
+ }catch(err){
+  if(err && err.name==="AbortError")return;
+ }
+ try{
+  if(navigator.clipboard && navigator.clipboard.writeText){
+   await navigator.clipboard.writeText(text);
+   alert(tr("Set list copied to clipboard.","Сет-лист скопирован."));
+   return;
+  }
+ }catch(err){}
+ const ta=document.createElement("textarea");
+ ta.value=text;
+ ta.style.position="fixed";
+ ta.style.opacity="0";
+ document.body.appendChild(ta);
+ ta.focus();ta.select();
+ const ok=document.execCommand("copy");
+ ta.remove();
+ alert(ok?tr("Set list copied to clipboard.","Сет-лист скопирован."):tr("Could not copy the set list.","Не удалось скопировать сет-лист."));
+};
+
+$("updateSet").onclick=()=>{
+ if(!currentSavedId)return;
+ const index=saved.findIndex(x=>x.id===currentSavedId);
+ if(index<0){updateCurrentSetButton();return}
+ const target=saved[index];
+ if(!confirm(tr(`Update "${target.name}" with the current song order and contents?`,`Обновить «${target.name}» текущим порядком и составом песен?`)))return;
+ rememberSavedForUndo();
+ target.main=clone(main);
+ persist();renderAll();
+};
+
+$("clearSet").onclick=()=>{
+ cancelPendingDeletes();
+ if(!main.length)return;
+ if(!confirm(tr("Clear the current set?","Очистить текущий сет?")))return;
+ rememberMainForUndo();
+ main=[];currentSetName="";currentSavedId="";persist();renderAll();
+};
+$("saveSet").onclick=()=>{
+ const name=$("setName").value.trim();if(!name)return;
+ let category=$("setCategory").value||SYSTEM_CATEGORY;
+ if(category===NEW_CATEGORY){
+  const cat=createSavedCategory();
+  if(!cat)return;
+  category=cat;
+ }
+ rememberSavedForUndo();
+ const obj={id:"set_"+Date.now()+"_"+Math.random().toString(36).slice(2,8),name,category,favorite:false,main:clone(main)};
+ saved.push(obj);
+ currentSetName=name;
+ currentSavedId=obj.id;
+ $("setName").value="";
+ persist();refreshCategoryControls();renderAll();
+};
+
+$("exportBackup").onclick=async()=>{
+ try{
+  const data={app:"Set List",version:4,exportedAt:new Date().toISOString(),songs,repCategories,main,currentSetName,currentSavedId,encore:[],savedCategories,saved:saved.map(x=>({id:x.id,name:x.name,category:x.category,favorite:!!x.favorite,main:x.main,encore:[]}))};
+  const json=JSON.stringify(data,null,2);
+  const filename="Set_List_Backup_"+new Date().toISOString().slice(0,10)+".json";
+  const file=new File([json],filename,{type:"application/json"});
+  try{
+   if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){
+    await navigator.share({title:"Set List Backup",text:"Set List backup",files:[file]});return;
+   }
+  }catch(err){if(err&&err.name==="AbortError")return}
+  const blob=new Blob([json],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=filename;a.style.display="none";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+ }catch(err){alert("Backup error: "+(err&&err.message?err.message:"unknown"))}
+};
+$("importBackup").onclick=()=>$("backupFile").click();
+$("backupFile").onchange=async e=>{
+ const file=e.target.files&&e.target.files[0];if(!file)return;
+ try{
+  const data=JSON.parse(await file.text());
+  if(!data||data.app!=="Set List"||!Array.isArray(data.songs)||!Array.isArray(data.main)||!Array.isArray(data.saved))throw new Error("invalid");
+  if(!confirm(tr("Restore this backup? Current data will be replaced.","Восстановить эту резервную копию? Текущие данные будут заменены."))){e.target.value="";return}
+  songs=data.songs;
+  repCategories=Array.isArray(data.repCategories)?uniqueClean([...data.repCategories.map(normalizeCategory),...songs.map(s=>normalizeCategory(s.project))]):uniqueClean([...songs.map(s=>normalizeCategory(s.project))]);
+  undoMain=[];redoMain=[];undoSaved=null;
+  currentSetName=data.currentSetName||"";
+  currentSavedId=data.currentSavedId||"";
+  main=[...(data.main||[]),...(data.encore||[])].filter((v,i,a)=>a.findIndex(y=>y.id===v.id)===i).map(x=>({id:x.id}));
+  saved=data.saved.map((x,i)=>({id:x.id||("set_"+Date.now()+"_"+i),name:x.name,category:(x.category||SYSTEM_CATEGORY).trim()||SYSTEM_CATEGORY,favorite:!!x.favorite,main:[...(x.main||[]),...(x.encore||[])].filter((v,i,a)=>a.findIndex(y=>y.id===v.id)===i).map(y=>({id:y.id}))}));
+  savedCategories=Array.isArray(data.savedCategories)?uniqueClean([...data.savedCategories.map(normalizeCategory),...saved.map(x=>x.category)]):uniqueClean([...saved.map(x=>x.category)]);
+  persist();refreshCategoryControls();renderAll();alert(tr("Backup restored.","Резервная копия восстановлена."));
+ }catch(err){alert(tr("Could not read the backup file.","Не удалось прочитать файл резервной копии."))}
+ e.target.value="";
+};
+
+function applyLanguage(){
+ document.documentElement.lang=currentLanguage==="ru"?"ru":"en";
+ const q=(sel,txt)=>{const el=document.querySelector(sel);if(el)el.textContent=txt};
+ q('.tab[data-tab="rep"]',tr("Repertoire","Репертуар"));
+ q('.tab[data-tab="set"]',tr("Current Set","Текущий сет"));
+ q('.tab[data-tab="saved"]',tr("Saved Sets","Сохранённые сеты"));
+ $("search").placeholder=tr("Search songs...","Поиск песен...");
+ q('#panel-rep .holdhint',tr("Press and hold a song title to edit.","Нажмите и удерживайте название песни для редактирования."));
+ const sums=document.querySelectorAll('#panel-rep details summary'); if(sums[0])sums[0].textContent=tr("Add song","Добавить песню"); if(sums[1])sums[1].textContent=tr("Add songs as a list","Добавить песни списком");
+ $("newTitle").placeholder=tr("Title","Название"); $("newMin").placeholder=tr("min","мин"); $("newSec").placeholder=tr("sec","сек");
+ if(!$("newKey").dataset.value) $("newKey").textContent=tr("Key","Тональность");
+ q('#addForm .add',tr("Add","Добавить")); q('#bulkAdd',tr("Add all","Добавить все"));
+ q('#panel-rep .note',tr("One song per line: Title—3:42—Am. Key is optional.","Одна песня в строке: Название—3:42—Am. Тональность необязательна."));
+ document.querySelectorAll(".songsLabel").forEach(el=>el.textContent=tr("songs","песен"));document.querySelectorAll(".totalLabel").forEach(el=>el.textContent=tr("Total","Всего"));
+ q('#undoSet',tr("Undo","Отменить"));q('#redoSet',tr("Redo","Повторить"));q('#clearSet',tr("Clear current set","Очистить текущий сет"));q('#updateSet',tr("Update current set","Обновить текущий сет"));q('#shareSet',tr("Share / Copy set list","Поделиться / Копировать сет-лист"));
+ q('#panel-set .section',tr("Save current set","Сохранить текущий сет")); $("setName").placeholder=tr("Set name","Название сета"); q('#saveSet',tr("Save","Сохранить"));
+ q('#panel-saved .section',tr("Saved Sets","Сохранённые сеты"));q('#panel-saved .holdhint',tr("Press and hold a saved set name to edit it.","Нажмите и удерживайте название сохранённого сета для редактирования."));q('#undoSaved',tr("Undo last change","Отменить последнее изменение"));
+ q('#panel-saved .backup .section',tr("Backup / Restore","Резервная копия / Восстановление"));q('#exportBackup',tr("Export Backup","Экспорт копии"));q('#importBackup',tr("Import Backup","Импорт копии"));q('#panel-saved .backup .note',tr("Backup includes Repertoire, Current Set, and all Saved Sets.","Резервная копия включает Репертуар, Текущий сет и все Сохранённые сеты."));
+ q('#openHelp',tr("Help","Помощь"));q('#openLanguage',tr("Language","Язык"));
+ q('#savedEditHeading',tr("Edit Saved Set","Редактировать сет")); const labs=document.querySelectorAll('#savedEditOverlay label');if(labs[0])labs[0].textContent=tr("Set name","Название сета");if(labs[1])labs[1].textContent=tr("Category","Категория");q('#savedEditNewCategory',tr("New category…","Новая категория…"));q('#savedEditCancel',tr("Cancel","Отмена"));q('#savedEditSave',tr("Save","Сохранить"));
+ q('#songDeleteConfirm',tr("Delete song","Удалить песню"));q('#songDeleteCancel',tr("Cancel","Отмена"));q('#categoryManageCancel',tr("Cancel","Отмена"));q('#accidentalPickerTitle',tr("Key","Тональность"));q('#accCancel',tr("Cancel","Отмена"));
+ q('#languageTitle',tr("Language","Язык"));q('#languageCancel',tr("Cancel","Отмена"));
+ refreshCategoryControls(); renderAll();
+}
+
+persist();refreshCategoryControls();
+document.querySelectorAll("#accidentalPicker [data-key]").forEach(btn=>{
+ btn.onclick=()=>setPickedKey(btn.dataset.key);
+});
+$("accCancel").onclick=()=>closeAccidentalPicker(true);
+$("accidentalPicker").onclick=e=>{
+ if(e.target===$("accidentalPicker"))closeAccidentalPicker(true);
+};
+
+renderAll();
+
+
+const languageOverlay=document.getElementById("languageOverlay");
+$("openLanguage").onclick=()=>{languageOverlay.hidden=false};
+$("languageCancel").onclick=()=>{languageOverlay.hidden=true};
+languageOverlay.onclick=e=>{if(e.target===languageOverlay)languageOverlay.hidden=true};
+$("languageEnglish").onclick=()=>{currentLanguage="en";localStorage.setItem("setlist_language","en");languageOverlay.hidden=true;applyLanguage()};
+$("languageRussian").onclick=()=>{currentLanguage="ru";localStorage.setItem("setlist_language","ru");languageOverlay.hidden=true;applyLanguage()};
+applyLanguage();
+
+const helpOverlay=document.getElementById("helpOverlay");
+const openHelp=document.getElementById("openHelp");
+const closeHelp=document.getElementById("closeHelp");
+if(openHelp&&closeHelp&&helpOverlay){
+ openHelp.addEventListener("click",()=>{helpOverlay.hidden=false;helpOverlay.scrollTop=0;document.body.style.overflow="hidden";});
+ closeHelp.addEventListener("click",()=>{helpOverlay.hidden=true;document.body.style.overflow="";});
+}
+
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>{navigator.serviceWorker.register("./service-worker.js").catch(()=>{});});
+}
+
+// Prevent Safari double-tap zoom on app chrome and empty areas.
+let lastTouchEnd=0;
+document.addEventListener("touchend",e=>{
+ const target=e.target;
+ const isForm=target && target.closest && target.closest("input,textarea,select");
+ const now=Date.now();
+ if(!isForm && now-lastTouchEnd<320){
+  e.preventDefault();
+ }
+ lastTouchEnd=now;
+},{passive:false});
+
+</script>
+
+<div id="categoryPicker" class="pickerOverlay" hidden>
+  <div class="pickerDialog" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+    <div id="pickerTitle" class="pickerTitle">Category</div>
+    <div id="pickerOptions" class="pickerOptions"></div>
+    <button id="pickerCancel" class="btn pickerCancel" type="button">Cancel</button>
+  </div>
+</div>
+
+</body>
+</html>
