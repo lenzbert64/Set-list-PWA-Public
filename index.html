@@ -75,6 +75,8 @@ textarea{width:100%;min-height:120px;resize:vertical}
  .form .add{grid-column:3}
  .tabs .tab{white-space:nowrap}
 }
+.copyrightFooter{text-align:center;color:#8a8f96;font-size:11px;padding:24px 0 8px}
+.helpShot + .helpShot{margin-top:10px}
 @media(prefers-color-scheme:dark){
  body{background:#111214;color:#f5f5f7}
  .card,.tab,.btn,input,select,textarea,.statbar{background:#1d1f22;color:#f5f5f7;border-color:#35383e}
@@ -561,7 +563,7 @@ input, textarea {
   <div class="header brandedHeader">
     <div class="titleBlock brandedTitleBlock">
       <img class="setListHeaderLogo" src="setlist-logo.png" alt="Set List">
-      <div class="version">Version 3.0</div>
+      <div class="version">Version 3.1</div>
     </div>
     <div class="headerTools">
       <button id="openLanguage" class="headerToolBtn" type="button">
@@ -663,40 +665,40 @@ input, textarea {
       </div>
       <div class="note">Backup includes Repertoire, Current Set, and all Saved Sets.</div>
     </div>
+    <div class="copyrightFooter">© 2026 Robert Lenz</div>
   </section>
 </div>
 
 <div id="helpOverlay" class="helpOverlay" hidden>
   <div class="helpPage">
     <div class="helpTop"><button id="closeHelp" class="helpBack" type="button">‹ Back</button><div class="helpTopTitle">Help</div><div></div></div>
-    <p class="helpIntro">A quick guide to the main controls. Most everyday actions are available directly from the three main screens.</p>
-    <section class="helpSection"><h2>Repertoire</h2><div class="helpShot"><img src="help-repertoire.png" alt="Repertoire"></div><div class="helpText">
-      <p><b>Repertoire</b> is your complete song library. Search by title or use <b>Category</b> to show one band or project.</p>
-      <p><b>⋯ Category menu</b> — rename a category or clear all songs from it. An empty category can also be deleted.</p>
-      <p><b>+ / ✓</b> adds a song to Current Set or removes it. Tap the <b>Key</b> to change it; the key is optional. Drag <b>≡</b> to change song order.</p>
-      <p><b>Press and hold a song title</b> to edit its title, duration or category. <b>Swipe right</b> to reveal Delete.</p>
-      <p><b>Add song</b> adds one song manually. <b>Add songs as a list</b> lets you paste several songs at once.</p>
-      <p class="helpNote">Deleting a song removes it from Repertoire, Current Set and all Saved Sets.</p>
-    </div></section>
-    <section class="helpSection"><h2>Current Set</h2><div class="helpShot"><img src="help-current.png" alt="Current Set"></div><div class="helpText">
-      <p><b>Current Set</b> shows the set you are working on, including song count and total duration. Drag <b>≡</b> to reorder songs, tap <b>−</b> to remove one, tap a key to change it, or press and hold a song title to edit its details.</p>
-      <p>The name above the songs is the Saved Set currently open. <b>★ Favorite</b> marks that Saved Set as a favorite.</p>
-      <p><b>Undo / Redo</b> steps backward or forward through recent changes. <b>Clear current set</b> removes all songs from Current Set.</p>
-      <p><b>Update current set</b> overwrites the Saved Set currently open. Changes are <b>not saved automatically</b>.</p>
-      <p><b>Share / Copy set list</b> exports a simple text list. <b>Save current set</b> creates a new Saved Set with the name and category you choose.</p>
-    </div></section>
-    <section class="helpSection"><h2>Saved Sets</h2><div class="helpShot"><img src="help-saved.png" alt="Saved Sets"></div><div class="helpText">
-      <p><b>Saved Sets</b> stores your set lists. Tap a set name to open it in Current Set. Each row shows song count and total duration; <b>★</b> marks a favorite.</p>
-      <p><b>Category</b> filters Saved Sets independently from Repertoire categories. <b>⋯ Category menu</b> renames a category or clears it; an empty category can also be deleted.</p>
-      <p><b>Press and hold a set name</b> to rename it or change its category. <b>Share / Copy</b> exports it as text; <b>Delete</b> removes it.</p>
-      <p><b>Undo last change</b> restores the most recent Saved Sets change when available.</p>
-      <p><b>Backup / Restore</b> exports or restores your songs, categories, Current Set and Saved Sets.</p>
-    </div></section>
-    <section class="helpSection"><h2>Gestures</h2><div class="helpGestures">
-      <div class="helpGesture"><b>Tap</b><span>Open, select or change a control.</span></div>
-      <div class="helpGesture"><b>Press and hold</b><span>Edit a song or a saved set.</span></div>
-      <div class="helpGesture"><b>Drag ≡</b><span>Change the order of songs.</span></div>
-      <div class="helpGesture"><b>Swipe right</b><span>Reveal Delete for a Repertoire song.</span></div>
+    <p id="helpIntro" class="helpIntro"></p>
+
+    <section class="helpSection">
+      <h2 id="helpRepTitle">Repertoire</h2>
+      <div class="helpShot"><img id="helpRepImg1" src="help-en-repertoire-1.jpg" alt="Repertoire"></div>
+      <div class="helpShot"><img id="helpRepImg2" src="help-en-repertoire-2.jpg" alt="Repertoire controls"></div>
+      <div class="helpText" id="helpRepText"></div>
+    </section>
+
+    <section class="helpSection">
+      <h2 id="helpCurrentTitle">Current Set</h2>
+      <div class="helpShot"><img id="helpCurrentImg1" src="help-en-current-1.jpg" alt="Current Set"></div>
+      <div class="helpShot"><img id="helpCurrentImg2" src="help-en-current-2.jpg" alt="Current Set controls"></div>
+      <div class="helpText" id="helpCurrentText"></div>
+    </section>
+
+    <section class="helpSection">
+      <h2 id="helpSavedTitle">Saved Sets</h2>
+      <div class="helpShot"><img id="helpSavedImg" src="help-en-saved.jpg" alt="Saved Sets"></div>
+      <div class="helpText" id="helpSavedText"></div>
+    </section>
+
+    <section class="helpSection"><h2 id="helpGesturesTitle">Gestures</h2><div class="helpGestures">
+      <div class="helpGesture"><b id="gestureTapTitle">Tap</b><span id="gestureTapText"></span></div>
+      <div class="helpGesture"><b id="gestureHoldTitle">Press and hold</b><span id="gestureHoldText"></span></div>
+      <div class="helpGesture"><b id="gestureDragTitle">Drag ≡</b><span id="gestureDragText"></span></div>
+      <div class="helpGesture"><b id="gestureSwipeTitle">Swipe right</b><span id="gestureSwipeText"></span></div>
     </div></section>
   </div>
 </div>
@@ -2074,6 +2076,73 @@ $("backupFile").onchange=async e=>{
  e.target.value="";
 };
 
+function applyHelpLanguage(){
+ const ru=currentLanguage==="ru";
+ const set=(id,html)=>{const el=document.getElementById(id);if(el)el.innerHTML=html};
+ set("closeHelp",ru?"‹ Назад":"‹ Back");
+ const top=document.querySelector('.helpTopTitle');if(top)top.textContent=ru?"Помощь":"Help";
+ set("helpIntro",ru?"Подробное руководство по основным функциям Set List. Все данные хранятся локально на вашем устройстве; резервную копию можно экспортировать во вкладке «Сеты».":"A detailed guide to the main Set List controls. Your data is stored locally on your device; you can export a backup from Saved Sets.");
+ set("helpRepTitle",ru?"Репертуар":"Repertoire");
+ set("helpCurrentTitle",ru?"Текущий сет":"Current Set");
+ set("helpSavedTitle",ru?"Сеты":"Saved Sets");
+ const imgs={
+  helpRepImg1:ru?"help-ru-repertoire-1.jpg":"help-en-repertoire-1.jpg",
+  helpRepImg2:ru?"help-ru-repertoire-2.jpg":"help-en-repertoire-2.jpg",
+  helpCurrentImg1:ru?"help-ru-current-1.jpg":"help-en-current-1.jpg",
+  helpCurrentImg2:ru?"help-ru-current-2.jpg":"help-en-current-2.jpg",
+  helpSavedImg:ru?"help-ru-saved.jpg":"help-en-saved.jpg"
+ };
+ Object.entries(imgs).forEach(([id,src])=>{const el=document.getElementById(id);if(el)el.src=src});
+ set("helpRepText",ru?`
+  <p><b>Репертуар</b> — ваша общая библиотека песен. Поле <b>Поиск песен</b> ищет по названию, а список категорий позволяет показывать только нужную группу или проект. Счётчик показывает количество выбранных песен и их общую продолжительность.</p>
+  <p><b>Категории.</b> Кнопка <b>⋯</b> рядом с фильтром открывает управление выбранной категорией: её можно переименовать или очистить. Пустую категорию можно удалить. Если есть песни, которым категория не назначена, автоматически появляется системная группа <b>Без категории</b>.</p>
+  <p><b>+ / ✓</b> добавляет песню в Текущий сет или удаляет её из него. <b>✓</b> означает, что песня уже находится в Текущем сете. Нажмите на <b>тональность</b>, чтобы изменить её; тональность указывать необязательно. Перетаскивайте <b>≡</b>, чтобы менять порядок песен в Репертуаре.</p>
+  <p><b>Нажмите и удерживайте название песни</b>, чтобы отредактировать название, продолжительность или категорию. <b>Смахните строку песни вправо</b>, чтобы открыть Delete / «Удалить».</p>
+  <p><b>Добавить песню</b> добавляет одну песню вручную: название, минуты, секунды, тональность и категория. <b>Добавить песни списком</b> позволяет вставить сразу несколько песен — по одной в строке.</p>
+  <p>Формат списка: <b>Название—3:42—A</b>, без пробелов вокруг разделителей. Тональность необязательна, поэтому допустимо и <b>Название—3:42</b>. Выбранная ниже категория применяется к добавляемым песням.</p>
+  <p class="helpNote"><b>Важно:</b> удаление песни из Репертуара удаляет её также из Текущего сета и из всех сохранённых сетов.</p>`:`
+  <p><b>Repertoire</b> is your complete song library. <b>Search songs</b> searches by title, while the category selector shows only the band or project you need. The counter shows the number of selected songs and their total duration.</p>
+  <p><b>Categories.</b> The <b>⋯</b> button beside the filter manages the selected category: rename it or clear its songs. An empty category can also be deleted. If songs have no assigned category, the system group <b>Uncategorized</b> appears automatically.</p>
+  <p><b>+ / ✓</b> adds a song to Current Set or removes it. <b>✓</b> means the song is already in Current Set. Tap the <b>Key</b> to change it; the key is optional. Drag <b>≡</b> to change the song order in Repertoire.</p>
+  <p><b>Press and hold a song title</b> to edit its title, duration or category. <b>Swipe the song row right</b> to reveal Delete.</p>
+  <p><b>Add song</b> adds one song manually: title, minutes, seconds, key and category. <b>Add songs as a list</b> lets you paste several songs at once, one song per line.</p>
+  <p>List format: <b>Title—3:42—A</b>, with no spaces around the separators. Key is optional, so <b>Title—3:42</b> is also valid. The category selected below is applied to the songs you add.</p>
+  <p class="helpNote"><b>Important:</b> deleting a song from Repertoire also removes it from Current Set and from every Saved Set.</p>`);
+ set("helpCurrentText",ru?`
+  <p><b>Текущий сет</b> — сет-лист, над которым вы сейчас работаете. Вверху показаны количество песен и общая продолжительность. Если открыт ранее сохранённый сет, его название отображается над списком.</p>
+  <p>Перетаскивайте <b>≡</b>, чтобы менять порядок песен. Нажмите <b>−</b>, чтобы убрать песню из Текущего сета, не удаляя её из Репертуара. Нажмите на <b>тональность</b>, чтобы изменить её. <b>Нажмите и удерживайте название песни</b>, чтобы отредактировать её данные.</p>
+  <p><b>★</b> помечает открытый сохранённый сет как избранный. <b>Отменить / Повторить</b> позволяют последовательно отменять и возвращать последние изменения Текущего сета.</p>
+  <p><b>Очистить текущий сет</b> удаляет из Текущего сета все песни. <b>Обновить текущий сет</b> перезаписывает тот сохранённый сет, который сейчас открыт.</p>
+  <p class="helpNote"><b>Изменения открытого сохранённого сета не сохраняются автоматически.</b> Чтобы записать новый порядок, удаление или другие изменения в существующий сет, нажмите <b>Обновить текущий сет</b>.</p>
+  <p><b>Поделиться / Копировать сет-лист</b> создаёт простой текстовый список, которым можно поделиться или который можно скопировать.</p>
+  <p><b>Сохранить текущий сет</b> создаёт новый сохранённый сет. Введите название, при необходимости выберите категорию и нажмите <b>Сохранить</b>.</p>`:`
+  <p><b>Current Set</b> is the set list you are working on. The top bar shows song count and total duration. If a previously saved set is open, its name appears above the song list.</p>
+  <p>Drag <b>≡</b> to reorder songs. Tap <b>−</b> to remove a song from Current Set without deleting it from Repertoire. Tap the <b>Key</b> to change it. <b>Press and hold a song title</b> to edit its details.</p>
+  <p><b>★</b> marks the open Saved Set as a favorite. <b>Undo / Redo</b> steps backward or forward through recent Current Set changes.</p>
+  <p><b>Clear current set</b> removes every song from Current Set. <b>Update current set</b> overwrites the Saved Set that is currently open.</p>
+  <p class="helpNote"><b>Changes to an open Saved Set are not saved automatically.</b> To store a new order, removals or other edits in that existing set, tap <b>Update current set</b>.</p>
+  <p><b>Share / Copy set list</b> creates a simple text list that you can share or copy.</p>
+  <p><b>Save current set</b> creates a new Saved Set. Enter a name, optionally choose a category, then tap <b>Save</b>.</p>`);
+ set("helpSavedText",ru?`
+  <p><b>Сеты</b> хранит все сохранённые сет-листы. Нажмите название сета, чтобы открыть его в Текущем сете. Для каждого сета показаны количество песен и общая продолжительность; <b>★</b> обозначает избранный сет.</p>
+  <p><b>Фильтр категорий</b> показывает сеты выбранной категории. Категории сетов управляются отдельно от категорий Репертуара. Кнопка <b>⋯</b> позволяет переименовать или очистить выбранную категорию; пустую категорию можно удалить.</p>
+  <p><b>Нажмите и удерживайте название сета</b>, чтобы переименовать его или изменить категорию. Иконка <b>Поделиться</b> открывает системное меню отправки, иконка <b>Копировать</b> копирует сет-лист как текст. <b>Удалить</b> удаляет сохранённый сет.</p>
+  <p><b>Отменить последнее изменение</b> восстанавливает последнее изменение в Сетах, когда отмена доступна.</p>
+  <p><b>Резервная копия / Восстановление.</b> <b>Экспорт копии</b> сохраняет резервную копию данных приложения. <b>Импорт копии</b> восстанавливает её и заменяет текущие данные данными из выбранной резервной копии.</p>
+  <p>Резервная копия включает <b>Репертуар, категории, Текущий сет и все сохранённые сеты</b>. Полезно экспортировать её перед переносом приложения на другое устройство или перед крупными изменениями.</p>`:`
+  <p><b>Saved Sets</b> stores all your saved set lists. Tap a set name to open it in Current Set. Each set shows song count and total duration; <b>★</b> marks a favorite.</p>
+  <p>The <b>category filter</b> shows sets from the selected category. Saved Set categories are managed independently from Repertoire categories. The <b>⋯</b> button lets you rename or clear the selected category; an empty category can also be deleted.</p>
+  <p><b>Press and hold a set name</b> to rename it or change its category. The <b>Share</b> icon opens the system share sheet, the <b>Copy</b> icon copies the set list as text, and <b>Delete</b> removes the Saved Set.</p>
+  <p><b>Undo last change</b> restores the most recent Saved Sets change when undo is available.</p>
+  <p><b>Backup / Restore.</b> <b>Export Backup</b> saves a backup of the app data. <b>Import Backup</b> restores a backup and replaces the current data with the data from the selected backup file.</p>
+  <p>The backup includes <b>Repertoire, categories, Current Set and all Saved Sets</b>. Exporting a backup is useful before moving to another device or making major changes.</p>`);
+ set("helpGesturesTitle",ru?"Жесты":"Gestures");
+ set("gestureTapTitle",ru?"Нажатие":"Tap"); set("gestureTapText",ru?"Открыть, выбрать или изменить элемент управления.":"Open, select or change a control.");
+ set("gestureHoldTitle",ru?"Нажать и удерживать":"Press and hold"); set("gestureHoldText",ru?"Редактировать песню или сохранённый сет.":"Edit a song or a saved set.");
+ set("gestureDragTitle",ru?"Перетащить ≡":"Drag ≡"); set("gestureDragText",ru?"Изменить порядок песен.":"Change the order of songs.");
+ set("gestureSwipeTitle",ru?"Смахнуть вправо":"Swipe right"); set("gestureSwipeText",ru?"Показать удаление песни в Репертуаре.":"Reveal Delete for a Repertoire song.");
+}
+
 function applyLanguage(){
  document.documentElement.lang=currentLanguage==="ru"?"ru":"en";
  const q=(sel,txt)=>{const el=document.querySelector(sel);if(el)el.textContent=txt};
@@ -2095,6 +2164,7 @@ function applyLanguage(){
  q('#savedEditHeading',tr("Edit Saved Set","Редактировать сет")); const labs=document.querySelectorAll('#savedEditOverlay label');if(labs[0])labs[0].textContent=tr("Set name","Название сета");if(labs[1])labs[1].textContent=tr("Category","Категория");q('#savedEditNewCategory',tr("New category…","Новая категория…"));q('#savedEditCancel',tr("Cancel","Отмена"));q('#savedEditSave',tr("Save","Сохранить"));
  q('#songDeleteConfirm',tr("Delete song","Удалить песню"));q('#songDeleteCancel',tr("Cancel","Отмена"));q('#categoryManageCancel',tr("Cancel","Отмена"));q('#accidentalPickerTitle',tr("Key","Тональность"));q('#accCancel',tr("Cancel","Отмена"));
  q('#languageTitle',tr("Language","Язык"));q('#languageCancel',tr("Cancel","Отмена"));
+ applyHelpLanguage();
  refreshCategoryControls(); renderAll();
 }
 
