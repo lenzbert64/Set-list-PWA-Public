@@ -1,41 +1,15 @@
-const CACHE_PREFIX="set-list-personal-";
-const CACHE_NAME=CACHE_PREFIX+"v2.8";
+const CACHE_NAME="set-list-public-v3.2";
 const INDEX="./index.html";
-const APP_SHELL=[INDEX,"./manifest.json","./robert-lenz-logo.png","./setlist-logo.png","./setlist-icon-192.png","./setlist-icon-512.png","./apple-touch-icon.png","./help-repertoire.png","./help-current.png","./help-saved.png"];
-
-self.addEventListener("install",event=>{
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache=>cache.addAll(APP_SHELL))
-      .then(()=>self.skipWaiting())
-  );
-});
-
-self.addEventListener("activate",event=>{
-  event.waitUntil(
-    caches.keys()
-      .then(keys=>Promise.all(
-        keys
-          .filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE_NAME)
-          .map(key=>caches.delete(key))
-      ))
-      .then(()=>self.clients.claim())
-  );
-});
-
+const APP_SHELL=[INDEX,"./manifest.json","./setlist-logo.png","./setlist-icon-192.png","./setlist-icon-512.png","./apple-touch-icon.png","./help-ru-repertoire-1.jpg","./help-ru-repertoire-2.jpg","./help-ru-current-1.jpg","./help-ru-current-2.jpg","./help-ru-saved.jpg","./help-en-repertoire-1.jpg","./help-en-repertoire-2.jpg","./help-en-current-1.jpg","./help-en-current-2.jpg","./help-en-saved.jpg"];
+self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting()));});
+self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith("set-list-public-")&&k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener("fetch",event=>{
-  if(event.request.method!=="GET")return;
-  const url=new URL(event.request.url);
-  if(url.origin!==self.location.origin)return;
-
-  if(event.request.mode==="navigate"){
-    event.respondWith(
-      caches.match(INDEX).then(cached=>cached||fetch(event.request))
-    );
-    return;
-  }
-
-  event.respondWith(
-    caches.match(event.request).then(cached=>cached||fetch(event.request))
-  );
+ if(event.request.method!=="GET")return;
+ const url=new URL(event.request.url);
+ if(url.origin!==self.location.origin)return;
+ if(event.request.mode==="navigate"){
+  event.respondWith(caches.match(INDEX).then(cached=>cached||fetch(event.request)));
+  return;
+ }
+ event.respondWith(caches.match(event.request).then(cached=>cached||fetch(event.request)));
 });
