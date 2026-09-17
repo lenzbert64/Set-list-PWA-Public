@@ -60,7 +60,7 @@ textarea{width:100%;min-height:120px;resize:vertical}
 #undoSet:disabled,#updateSet:disabled{opacity:.42}
 .holdhint{font-size:11px;color:#8a8f96;margin-top:4px}
 
-.savedrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;align-items:center;padding:7px 0;border-top:1px solid #eceef1}
+.savedrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:6px;align-items:center;padding:7px 0;border-top:1px solid #eceef1}
 .savedrow:first-child{border-top:0}
 .savedopen{min-width:0;cursor:pointer;padding:3px 0;touch-action:manipulation}
 .savedopen .title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -75,8 +75,6 @@ textarea{width:100%;min-height:120px;resize:vertical}
  .form .add{grid-column:3}
  .tabs .tab{white-space:nowrap}
 }
-.copyrightFooter{text-align:center;color:#8a8f96;font-size:11px;padding:24px 0 8px}
-.helpShot + .helpShot{margin-top:10px}
 @media(prefers-color-scheme:dark){
  body{background:#111214;color:#f5f5f7}
  .card,.tab,.btn,input,select,textarea,.statbar{background:#1d1f22;color:#f5f5f7;border-color:#35383e}
@@ -269,16 +267,6 @@ button, input, select, textarea, summary, .row, .setrow, .handle, .title, .tab {
   height:30px;
   padding:2px 7px;
 }
-.savedIconGroup{display:flex;gap:6px;align-items:center}
-.shareIcon,.copyIcon{
-  width:34px;
-  min-width:34px;
-  padding:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.shareIcon svg,.copyIcon svg{display:block;pointer-events:none}
 
 
 .songkey{
@@ -535,12 +523,13 @@ input, textarea {
 .messageBrand{gap:0;transform:translateY(8px);margin-left:auto;padding-right:4px}
 .messageBrand .messageLogo{margin-left:0}
 
-/* v3.0 global header tools */
-.headerTools{margin-left:auto;display:flex;align-items:center;gap:8px;padding:3px 7px 0 0}
-.headerToolBtn{appearance:none;border:0;background:transparent;color:#aeb3bb;width:38px;height:38px;padding:7px;display:grid;place-items:center;border-radius:10px}
-.headerToolBtn:active{background:#25282b;color:#fff}
-.headerToolBtn svg{display:block;width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-@media(max-width:650px){.headerTools{gap:5px;padding-right:5px}.headerToolBtn{width:36px;height:36px;padding:7px}.headerToolBtn svg{width:22px;height:22px}}
+/* v2.6 Personal branding */
+.robertBrand{display:flex;align-items:center;margin-left:auto;padding-right:4px;transform:translateY(2px)}
+.robertLogo{display:block;width:auto;height:45px;max-width:124px;object-fit:contain;object-position:right center}
+@media(max-width:650px){.robertLogo{height:41px;max-width:115px}}
+.savedIconBtn{width:32px;min-width:32px;height:30px;min-height:30px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.savedIconBtn svg{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.personalFooter{text-align:center;color:#8a8f96;font-size:12px;padding:4px 0 calc(8px + env(safe-area-inset-bottom));letter-spacing:.1px}
 
 /* v2.4 Help */
 .helpLinkWrap{text-align:center;padding:8px 0 2px}
@@ -549,7 +538,7 @@ input, textarea {
 .helpPage{max-width:750px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px calc(40px + env(safe-area-inset-bottom))}
 .helpTop{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:70px 1fr 70px;align-items:center;background:rgba(16,17,18,.96);padding:8px 0 12px;border-bottom:1px solid #2f3337}
 .helpTopTitle{text-align:center;font-size:22px;font-weight:700}.helpBack{appearance:none;border:0;background:none;color:#aeb3bb;font:inherit;font-size:16px;text-align:left;padding:8px 0}
-.helpIntro,.helpNote{color:#aeb3bb;line-height:1.45}.helpIntro{margin:18px 2px 24px;font-size:15px;white-space:pre-line}
+.helpIntro,.helpNote{color:#aeb3bb;line-height:1.45}.helpIntro{margin:18px 2px 24px;font-size:15px}
 .helpSection{margin:0 0 34px}.helpSection h2{font-size:23px;margin:0 0 12px}
 .helpShot{border:1px solid #373b40;border-radius:16px;overflow:hidden;background:#0f1011;margin-bottom:14px}.helpShot img{display:block;width:100%;height:auto}
 .helpText{border:1px solid #373b40;background:#1d1f21;border-radius:16px;padding:15px 16px}.helpText p{font-size:15px;line-height:1.46;margin:0 0 10px}.helpText p:last-child{margin-bottom:0}.helpText b{color:#fff}
@@ -563,16 +552,9 @@ input, textarea {
   <div class="header brandedHeader">
     <div class="titleBlock brandedTitleBlock">
       <img class="setListHeaderLogo" src="setlist-logo.png" alt="Set List">
-      <div class="version">Version 3.2</div>
+      <div class="version">Version 2.8</div>
     </div>
-    <div class="headerTools">
-      <button id="openLanguage" class="headerToolBtn" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.4 2.5 3.7 5.5 3.7 9S14.4 18.5 12 21M12 3C9.6 5.5 8.3 8.5 8.3 12S9.6 18.5 12 21"></path></svg>
-      </button>
-      <button id="openHelp" class="headerToolBtn" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M9.7 9a2.45 2.45 0 1 1 4.4 1.5c-.9 1.1-2.1 1.4-2.1 3"></path><path d="M12 17.2h.01"></path></svg>
-      </button>
-    </div>
+    <div class="robertBrand"><img class="robertLogo" src="robert-lenz-logo.png" alt="Robert Lenz"></div>
   </div>
 
   <div class="tabs">
@@ -587,7 +569,7 @@ input, textarea {
         <input id="search" type="search" placeholder="Search songs...">
         <div class="categoryFilterGroup"><select id="filter"></select><button id="repCategoryManage" class="btn categoryManageBtn" type="button" aria-label="Manage category" hidden>⋯</button></div>
       </div>
-      <div class="stickyStats"><div class="statbar"><span id="repCount">0</span> <span class="songsLabel">songs</span> · <span class="totalLabel">Total</span> <span id="repTotal">0:00</span></div></div>
+      <div class="stickyStats"><div class="statbar"><span id="repCount">0</span> songs · Total <span id="repTotal">0:00</span></div></div>
       <div id="rep"></div>
       <div class="holdhint">Press and hold a song title to edit.</div>
     </div>
@@ -606,18 +588,18 @@ input, textarea {
 
     <details class="card addCard">
       <summary>Add songs as a list</summary>
-      <textarea id="bulkText" placeholder="Song One—3:42—A&#10;Song Two—4:05—E&#10;Song Three—3:18"></textarea>
+      <textarea id="bulkText" placeholder="Song One—3:42—Am&#10;Song Two—4:05—E&#10;Song Three—3:18"></textarea>
       <div class="bulkActions">
         <select id="bulkProject"></select>
         <button id="bulkAdd" class="btn primary" type="button">Add all</button>
       </div>
-      <div class="note">One song per line: Title—3:42—A. Key is optional.</div>
+      <div class="note">One song per line: Title—3:42—Am. Key is optional.</div>
       <div id="bulkResult" class="note"></div>
     </details>
   </section>
 
   <section id="panel-set" class="panel">
-    <div class="stickyStats"><div class="statbar"><span id="count">0</span> <span class="songsLabel">songs</span> · <span class="totalLabel">Total</span> <span id="total">0:00</span></div></div>
+    <div class="stickyStats"><div class="statbar"><span id="count">0</span> songs · Total <span id="total">0:00</span></div></div>
     <div id="currentSetNameBar" class="stickyStats setNameStats" hidden>
       <div class="statbar currentSetNameRow">
         <div class="currentSetNameEditable" id="currentSetName" title="Press and hold to edit saved set"></div>
@@ -665,52 +647,43 @@ input, textarea {
       </div>
       <div class="note">Backup includes Repertoire, Current Set, and all Saved Sets.</div>
     </div>
-    <div class="copyrightFooter">© 2026 Robert Lenz</div>
+    <div class="helpLinkWrap"><button id="openHelp" class="helpLink" type="button">Help</button></div>
+    <div class="personalFooter">© 2026 Robert Lenz</div>
   </section>
 </div>
 
 <div id="helpOverlay" class="helpOverlay" hidden>
   <div class="helpPage">
     <div class="helpTop"><button id="closeHelp" class="helpBack" type="button">‹ Back</button><div class="helpTopTitle">Help</div><div></div></div>
-    <p id="helpIntro" class="helpIntro"></p>
-
-    <section class="helpSection">
-      <h2 id="helpRepTitle">Repertoire</h2>
-      <div class="helpShot"><img id="helpRepImg1" src="help-en-repertoire-1.jpg" alt="Repertoire"></div>
-      <div class="helpShot"><img id="helpRepImg2" src="help-en-repertoire-2.jpg" alt="Repertoire controls"></div>
-      <div class="helpText" id="helpRepText"></div>
-    </section>
-
-    <section class="helpSection">
-      <h2 id="helpCurrentTitle">Current Set</h2>
-      <div class="helpShot"><img id="helpCurrentImg1" src="help-en-current-1.jpg" alt="Current Set"></div>
-      <div class="helpShot"><img id="helpCurrentImg2" src="help-en-current-2.jpg" alt="Current Set controls"></div>
-      <div class="helpText" id="helpCurrentText"></div>
-    </section>
-
-    <section class="helpSection">
-      <h2 id="helpSavedTitle">Saved Sets</h2>
-      <div class="helpShot"><img id="helpSavedImg" src="help-en-saved.jpg" alt="Saved Sets"></div>
-      <div class="helpText" id="helpSavedText"></div>
-    </section>
-
-    <section class="helpSection"><h2 id="helpGesturesTitle">Gestures</h2><div class="helpGestures">
-      <div class="helpGesture"><b id="gestureTapTitle">Tap</b><span id="gestureTapText"></span></div>
-      <div class="helpGesture"><b id="gestureHoldTitle">Press and hold</b><span id="gestureHoldText"></span></div>
-      <div class="helpGesture"><b id="gestureDragTitle">Drag ≡</b><span id="gestureDragText"></span></div>
-      <div class="helpGesture"><b id="gestureSwipeTitle">Swipe right</b><span id="gestureSwipeText"></span></div>
+    <p class="helpIntro">A quick guide to the main controls. Most everyday actions are available directly from the three main screens.</p>
+    <section class="helpSection"><h2>Repertoire</h2><div class="helpShot"><img src="help-repertoire.png" alt="Repertoire"></div><div class="helpText">
+      <p><b>Repertoire</b> is your complete song library. Search by title or use <b>Category</b> to show one band or project.</p>
+      <p><b>⋯ Category menu</b> — rename a category or clear all songs from it. An empty category can also be deleted.</p>
+      <p><b>+ / ✓</b> adds a song to Current Set or removes it. Tap the <b>Key</b> to change it; the key is optional. Drag <b>≡</b> to change song order.</p>
+      <p><b>Press and hold a song title</b> to edit its title, duration or category. <b>Swipe right</b> to reveal Delete.</p>
+      <p><b>Add song</b> adds one song manually. <b>Add songs as a list</b> lets you paste several songs at once.</p>
+      <p class="helpNote">Deleting a song removes it from Repertoire, Current Set and all Saved Sets.</p>
     </div></section>
-  </div>
-</div>
-
-<div id="languageOverlay" class="pickerOverlay" hidden>
-  <div class="pickerDialog" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
-    <div id="languageTitle" class="pickerTitle">Language</div>
-    <div class="pickerOptions">
-      <button id="languageEnglish" type="button" class="btn pickerOption">English</button>
-      <button id="languageRussian" type="button" class="btn pickerOption">Русский</button>
-    </div>
-    <button id="languageCancel" type="button" class="btn pickerCancel">Cancel</button>
+    <section class="helpSection"><h2>Current Set</h2><div class="helpShot"><img src="help-current.png" alt="Current Set"></div><div class="helpText">
+      <p><b>Current Set</b> shows the set you are working on, including song count and total duration. Drag <b>≡</b> to reorder songs, tap <b>−</b> to remove one, tap a key to change it, or press and hold a song title to edit its details.</p>
+      <p>The name above the songs is the Saved Set currently open. <b>★ Favorite</b> marks that Saved Set as a favorite.</p>
+      <p><b>Undo / Redo</b> steps backward or forward through recent changes. <b>Clear current set</b> removes all songs from Current Set.</p>
+      <p><b>Update current set</b> overwrites the Saved Set currently open. Changes are <b>not saved automatically</b>.</p>
+      <p><b>Share / Copy set list</b> exports a simple text list. <b>Save current set</b> creates a new Saved Set with the name and category you choose.</p>
+    </div></section>
+    <section class="helpSection"><h2>Saved Sets</h2><div class="helpShot"><img src="help-saved.png" alt="Saved Sets"></div><div class="helpText">
+      <p><b>Saved Sets</b> stores your set lists. Tap a set name to open it in Current Set. Each row shows song count and total duration; <b>★</b> marks a favorite.</p>
+      <p><b>Category</b> filters Saved Sets independently from Repertoire categories. <b>⋯ Category menu</b> renames a category or clears it; an empty category can also be deleted.</p>
+      <p><b>Press and hold a set name</b> to rename it or change its category. <b>Copy</b> copies it as text, <b>Share</b> opens the system share sheet, and <b>Delete</b> removes it.</p>
+      <p><b>Undo last change</b> restores the most recent Saved Sets change when available.</p>
+      <p><b>Backup / Restore</b> exports or restores your songs, categories, Current Set and Saved Sets.</p>
+    </div></section>
+    <section class="helpSection"><h2>Gestures</h2><div class="helpGestures">
+      <div class="helpGesture"><b>Tap</b><span>Open, select or change a control.</span></div>
+      <div class="helpGesture"><b>Press and hold</b><span>Edit a song or a saved set.</span></div>
+      <div class="helpGesture"><b>Drag ≡</b><span>Change the order of songs.</span></div>
+      <div class="helpGesture"><b>Swipe right</b><span>Reveal Delete for a Repertoire song.</span></div>
+    </div></section>
   </div>
 </div>
 
@@ -778,7 +751,12 @@ input, textarea {
 </div>
 
 <script>
-const starter=[];
+const starter=[
+["When Your Love Is In Town",4,38],["I've Got To Know",4,55],["Tears",4,13],
+["Troubles",4,2],["Take Me Up",4,24],["Middle Of The Road",3,42],
+["Partners In Pain",4,24],["Traveller In Time",3,5],["All You Want",4,16],
+["The Cult Of New Moon",3,35],["Lust",3,36],["When It's Over",3,59]
+];
 const fmt=s=>{s=Math.max(0,Math.round(Number(s)||0));const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;return h?`${h}:${String(m).padStart(2,"0")}:${String(x).padStart(2,"0")}`:`${m}:${String(x).padStart(2,"0")}`};
 const clone=x=>JSON.parse(JSON.stringify(x));
 function cancelPendingDeletes(){
@@ -788,7 +766,8 @@ function cancelPendingDeletes(){
 }
 const $=id=>document.getElementById(id);
 
-let songs=JSON.parse(localStorage.getItem("setlist_public_songs")||"null") || [];
+let songs=JSON.parse(localStorage.getItem("setlist_songs")||"null") ||
+ starter.map((x,i)=>({id:"m"+i,title:x[0],duration:x[1]*60+x[2],project:"MessAge"}));
 
 const uniqueClean=arr=>[...new Set(arr.map(x=>(x||"").trim()).filter(Boolean))];
 const SYSTEM_CATEGORY="Uncategorised";
@@ -798,40 +777,40 @@ const normalizeCategory=x=>{
  return c;
 };
 songs=songs.map(s=>({...s,project:normalizeCategory(s.project)}));
-let repCategories=JSON.parse(localStorage.getItem("setlist_public_rep_categories")||"null");
+let repCategories=JSON.parse(localStorage.getItem("setlist_rep_categories")||"null");
 if(!Array.isArray(repCategories)){
- repCategories=uniqueClean([...songs.map(s=>s.project)]);
+ repCategories=uniqueClean([SYSTEM_CATEGORY,"MessAge","Браво",...songs.map(s=>s.project)]);
 }else{
- repCategories=uniqueClean([...repCategories.map(normalizeCategory),...songs.map(s=>s.project)]);
+ repCategories=uniqueClean([SYSTEM_CATEGORY,...repCategories.map(normalizeCategory),...songs.map(s=>s.project)]);
 }
 
-let main=JSON.parse(localStorage.getItem("setlist_public_main")||"[]");
-let currentSetName=localStorage.getItem("setlist_public_current_name")||"";
-let oldEncore=JSON.parse(localStorage.getItem("setlist_public_encore")||"[]");
+let main=JSON.parse(localStorage.getItem("setlist_main")||"[]");
+let currentSetName=localStorage.getItem("setlist_current_name")||"";
+let oldEncore=JSON.parse(localStorage.getItem("setlist_encore")||"[]");
 if(oldEncore.length){
  const ids=new Set(main.map(x=>x.id));
  oldEncore.forEach(x=>{if(!ids.has(x.id)){main.push({id:x.id});ids.add(x.id)}});
  oldEncore=[];
 }
-let saved=JSON.parse(localStorage.getItem("setlist_public_saved")||"[]").map((x,i)=>({
+let saved=JSON.parse(localStorage.getItem("setlist_saved")||"[]").map((x,i)=>({
  id:x.id||("set_"+Date.now()+"_"+i),
  name:x.name,
  category:normalizeCategory(x.category),
  favorite:!!x.favorite,
  main:[...(x.main||[]),...(x.encore||[])].filter((v,i,a)=>a.findIndex(y=>y.id===v.id)===i)
 }));
-let currentSavedId=localStorage.getItem("setlist_public_current_saved_id")||"";
+let currentSavedId=localStorage.getItem("setlist_current_saved_id")||"";
 if(!currentSavedId && currentSetName){
  const linked=saved.find(x=>x.name===currentSetName);
  if(linked)currentSavedId=linked.id;
 }
-let savedCategories=JSON.parse(localStorage.getItem("setlist_public_saved_categories")||"null");
-let lastRepFilter=localStorage.getItem("setlist_public_rep_filter")||"All";
-let lastSavedFilter=localStorage.getItem("setlist_public_saved_filter")||"All";
+let savedCategories=JSON.parse(localStorage.getItem("setlist_saved_categories")||"null");
+let lastRepFilter=localStorage.getItem("setlist_rep_filter")||"All";
+let lastSavedFilter=localStorage.getItem("setlist_saved_filter")||"All";
 if(!Array.isArray(savedCategories)){
- savedCategories=uniqueClean([...saved.map(x=>x.category)]);
+ savedCategories=uniqueClean([SYSTEM_CATEGORY,...saved.map(x=>x.category)]);
 }else{
- savedCategories=uniqueClean([...savedCategories.map(normalizeCategory),...saved.map(x=>x.category)]);
+ savedCategories=uniqueClean([SYSTEM_CATEGORY,...savedCategories.map(normalizeCategory),...saved.map(x=>x.category)]);
 }
 
 let undoMain=[];
@@ -869,51 +848,43 @@ function updateSavedUndoButton(){
 
 
 function persist(){
- localStorage.setItem("setlist_public_songs",JSON.stringify(songs));
- localStorage.setItem("setlist_public_rep_categories",JSON.stringify(repCategories));
- localStorage.setItem("setlist_public_main",JSON.stringify(main.map(x=>({id:x.id}))));
- localStorage.setItem("setlist_public_current_name",currentSetName);
- localStorage.setItem("setlist_public_current_saved_id",currentSavedId);
- localStorage.setItem("setlist_public_encore","[]");
- localStorage.setItem("setlist_public_saved_categories",JSON.stringify(savedCategories));
- localStorage.setItem("setlist_public_saved",JSON.stringify(saved.map(x=>({id:x.id,name:x.name,category:x.category,favorite:!!x.favorite,main:x.main,encore:[]}))));
+ localStorage.setItem("setlist_songs",JSON.stringify(songs));
+ localStorage.setItem("setlist_rep_categories",JSON.stringify(repCategories));
+ localStorage.setItem("setlist_main",JSON.stringify(main.map(x=>({id:x.id}))));
+ localStorage.setItem("setlist_current_name",currentSetName);
+ localStorage.setItem("setlist_current_saved_id",currentSavedId);
+ localStorage.setItem("setlist_encore","[]");
+ localStorage.setItem("setlist_saved_categories",JSON.stringify(savedCategories));
+ localStorage.setItem("setlist_saved",JSON.stringify(saved.map(x=>({id:x.id,name:x.name,category:x.category,favorite:!!x.favorite,main:x.main,encore:[]}))));
 }
 const byId=id=>songs.find(s=>s.id===id);
 const inSet=id=>main.some(x=>x.id===id);
 
 const NEW_CATEGORY="__new_category__";
-let currentLanguage=localStorage.getItem("setlist_public_language")==="ru"?"ru":"en";
-const tr=(en,ru)=>currentLanguage==="ru"?ru:en;
-const categoryLabel=cat=>cat===SYSTEM_CATEGORY?tr("Uncategorized","Без категории"):cat;
-const repFilterCategories=()=>uniqueClean([...repCategories.filter(c=>c!==SYSTEM_CATEGORY),...(songs.some(s=>s.project===SYSTEM_CATEGORY)?[SYSTEM_CATEGORY]:[])]);
-const savedFilterCategories=()=>uniqueClean([...savedCategories.filter(c=>c!==SYSTEM_CATEGORY),...(saved.some(x=>x.category===SYSTEM_CATEGORY)?[SYSTEM_CATEGORY]:[])]);
-const assignmentCategories=categories=>uniqueClean([SYSTEM_CATEGORY,...categories.filter(c=>c!==SYSTEM_CATEGORY)]);
 
-
-function pickCategory(categories,current,{allowNew=true,newPrompt=null}={}){
- newPrompt=newPrompt||tr("New category name:","Название новой категории:");
+function pickCategory(categories,current,{allowNew=true,newPrompt="New category name:"}={}){
  return new Promise(resolve=>{
   const overlay=$("categoryPicker"),options=$("pickerOptions");
   options.innerHTML="";
-  $("pickerTitle").textContent=tr("Category","Категория");
+  $("pickerTitle").textContent="Category";
   const close=value=>{overlay.hidden=true;resolve(value)};
   categories.forEach(cat=>{
    const b=document.createElement("button");
    b.type="button";b.className="btn pickerOption"+(cat===current?" selected":"");
-   b.textContent=(cat===current?"✓ ":"")+categoryLabel(cat);
+   b.textContent=(cat===current?"✓ ":"")+cat;
    b.onclick=()=>close({category:cat,isNew:false});
    options.appendChild(b);
   });
   if(allowNew){
    const b=document.createElement("button");
    b.type="button";b.className="btn pickerOption";
-   b.textContent=tr("＋ New category…","＋ Новая категория…");
+   b.textContent="＋ New category…";
    b.onclick=()=>{
     overlay.hidden=true;
     const name=prompt(newPrompt);
     if(name===null){resolve(null);return}
     const clean=name.trim();
-    if(!clean){alert(tr("Category name cannot be empty.","Название категории не может быть пустым."));resolve(null);return}
+    if(!clean){alert("Category name cannot be empty.");resolve(null);return}
     resolve({category:clean,isNew:true});
    };
    options.appendChild(b);
@@ -928,13 +899,13 @@ function fillCategorySelect(select,categories,{includeAll=false,includeNew=false
  const prev=selected!==null?selected:select.value;
  select.innerHTML="";
  if(includeAll){
-  const o=document.createElement("option");o.value="All";o.textContent=tr("All","Все");select.appendChild(o);
+  const o=document.createElement("option");o.value="All";o.textContent="All";select.appendChild(o);
  }
  categories.forEach(cat=>{
-  const o=document.createElement("option");o.value=cat;o.textContent=categoryLabel(cat);select.appendChild(o);
+  const o=document.createElement("option");o.value=cat;o.textContent=cat;select.appendChild(o);
  });
  if(includeNew){
-  const o=document.createElement("option");o.value=NEW_CATEGORY;o.textContent=tr("New category…","Новая категория…");select.appendChild(o);
+  const o=document.createElement("option");o.value=NEW_CATEGORY;o.textContent="New category…";select.appendChild(o);
  }
  const values=[...select.options].map(o=>o.value);
  if(values.includes(prev))select.value=prev;
@@ -943,11 +914,11 @@ function fillCategorySelect(select,categories,{includeAll=false,includeNew=false
 }
 
 function refreshCategoryControls(){
- fillCategorySelect($("filter"),repFilterCategories(),{includeAll:true,includeNew:true});
- fillCategorySelect($("newProject"),assignmentCategories(repCategories),{includeNew:true});
- fillCategorySelect($("bulkProject"),assignmentCategories(repCategories),{includeNew:true});
- fillCategorySelect($("savedFilter"),savedFilterCategories(),{includeAll:true,includeNew:true});
- fillCategorySelect($("setCategory"),assignmentCategories(savedCategories),{includeNew:true});
+ fillCategorySelect($("filter"),repCategories,{includeAll:true,includeNew:true});
+ fillCategorySelect($("newProject"),repCategories,{includeNew:true});
+ fillCategorySelect($("bulkProject"),repCategories,{includeNew:true});
+ fillCategorySelect($("savedFilter"),savedCategories,{includeAll:true,includeNew:true});
+ fillCategorySelect($("setCategory"),savedCategories,{includeNew:true});
  const repValues=[...$("filter").options].map(o=>o.value);
  const savedValues=[...$("savedFilter").options].map(o=>o.value);
  if(repValues.includes(lastRepFilter))$("filter").value=lastRepFilter;
@@ -973,18 +944,18 @@ function closeCategoryManage(){
 }
 
 function renameManagedCategory(kind,oldName){
- const promptText=kind==="rep"?tr("Rename Repertoire category:","Переименовать категорию репертуара:"):tr("Rename Saved Sets category:","Переименовать категорию сетов:");
+ const promptText=kind==="rep"?"Rename Repertoire category:":"Rename Saved Sets category:";
  const name=prompt(promptText,oldName);
  if(name===null)return;
  const clean=name.trim();
- if(!clean){alert(tr("Category name cannot be empty.","Название категории не может быть пустым."));return}
+ if(!clean){alert("Category name cannot be empty.");return}
  if(clean.toLowerCase()===SYSTEM_CATEGORY.toLowerCase()){
-  alert(tr(`${categoryLabel(SYSTEM_CATEGORY)} is a system category and cannot be used as a custom category name.`,`«${categoryLabel(SYSTEM_CATEGORY)}» — системная категория, это название нельзя использовать для пользовательской категории.`));
+  alert(`${SYSTEM_CATEGORY} is a system category and cannot be used as a custom category name.`);
   return;
  }
  const categories=kind==="rep"?repCategories:savedCategories;
  const duplicate=categories.find(c=>c.toLowerCase()===clean.toLowerCase() && c!==oldName);
- if(duplicate){alert(tr("A category with that name already exists.","Категория с таким названием уже существует."));return}
+ if(duplicate){alert("A category with that name already exists.");return}
 
  if(kind==="rep"){
   repCategories=repCategories.map(c=>c===oldName?clean:c);
@@ -1007,7 +978,7 @@ function clearManagedCategory(kind,name){
   : saved.filter(x=>x.category===name).length;
  if(!count)return;
  const noun=kind==="rep"?(count===1?"song":"songs"):(count===1?"saved set":"saved sets");
- if(!confirm(currentLanguage==="ru"?`Переместить ${count} из категории «${name}» в «${categoryLabel(SYSTEM_CATEGORY)}»?`:`Move ${count} ${noun} from "${name}" to ${categoryLabel(SYSTEM_CATEGORY)}?`))return;
+ if(!confirm(`Move ${count} ${noun} from "${name}" to ${SYSTEM_CATEGORY}?`))return;
 
  if(kind==="rep"){
   songs=songs.map(s=>s.project===name?{...s,project:SYSTEM_CATEGORY}:s);
@@ -1026,8 +997,8 @@ function deleteManagedCategory(kind,name){
  const count=kind==="rep"
   ? songs.filter(s=>s.project===name).length
   : saved.filter(x=>x.category===name).length;
- if(count){alert(tr("Only an empty category can be deleted.","Удалить можно только пустую категорию."));return}
- if(!confirm(tr(`Delete empty category "${name}"?`,`Удалить пустую категорию «${name}»?`)))return;
+ if(count){alert("Only an empty category can be deleted.");return}
+ if(!confirm(`Delete empty category "${name}"?`))return;
 
  if(kind==="rep"){
   repCategories=repCategories.filter(c=>c!==name);
@@ -1057,17 +1028,17 @@ function openCategoryManage(kind,name){
   : saved.filter(x=>x.category===name).length;
 
  const rename=document.createElement("button");
- rename.type="button";rename.className="btn pickerOption";rename.textContent=tr("Rename category","Переименовать категорию");
+ rename.type="button";rename.className="btn pickerOption";rename.textContent="Rename category";
  rename.onclick=()=>renameManagedCategory(kind,name);
  options.appendChild(rename);
 
  const action=document.createElement("button");
  action.type="button";action.className="btn pickerOption";
  if(count){
-  action.textContent=tr("Clear entire category","Очистить категорию");
+  action.textContent="Clear entire category";
   action.onclick=()=>clearManagedCategory(kind,name);
  }else{
-  action.textContent=tr("Delete category","Удалить категорию");
+  action.textContent="Delete category";
   action.onclick=()=>deleteManagedCategory(kind,name);
  }
  options.appendChild(action);
@@ -1106,10 +1077,10 @@ $("categoryManageCancel").onclick=closeCategoryManage;
 $("categoryManageOverlay").onclick=e=>{if(e.target===$("categoryManageOverlay"))closeCategoryManage()};
 
 function createRepCategory(){
- const name=prompt(tr("New Repertoire category name:","Название новой категории репертуара:"));
+ const name=prompt("New Repertoire category name:");
  if(name===null)return null;
  const clean=name.trim();
- if(!clean){alert(tr("Category name cannot be empty.","Название категории не может быть пустым."));return null}
+ if(!clean){alert("Category name cannot be empty.");return null}
  if(clean.toLowerCase()==="uncategorized" || clean.toLowerCase()==="uncategorised")return SYSTEM_CATEGORY;
  const existing=repCategories.find(x=>x.toLowerCase()===clean.toLowerCase());
  if(existing)return existing;
@@ -1117,10 +1088,10 @@ function createRepCategory(){
 }
 
 function createSavedCategory(){
- const name=prompt(tr("New Saved Sets category name:","Название новой категории сетов:"));
+ const name=prompt("New Saved Sets category name:");
  if(name===null)return null;
  const clean=name.trim();
- if(!clean){alert(tr("Category name cannot be empty.","Название категории не может быть пустым."));return null}
+ if(!clean){alert("Category name cannot be empty.");return null}
  if(clean.toLowerCase()==="uncategorized" || clean.toLowerCase()==="uncategorised")return SYSTEM_CATEGORY;
  const existing=savedCategories.find(x=>x.toLowerCase()===clean.toLowerCase());
  if(existing)return existing;
@@ -1131,8 +1102,8 @@ function createSavedCategory(){
 function currentSetPlainText(){
  const total=main.reduce((n,x)=>n+(byId(x.id)?.duration||0),0);
  const title=currentSetName||"Set List";
- const lines=main.map((x,i)=>`${i+1}. ${byId(x.id)?.title||tr("Unknown song","Неизвестная песня")}`);
- return `${title}\n${main.length} ${tr("songs","песен")} · ${tr("Total","Всего")} ${fmt(total)}\n\n${lines.join("\n")}`;
+ const lines=main.map((x,i)=>`${i+1}. ${byId(x.id)?.title||"Unknown song"}`);
+ return `${title}\n${main.length} songs · Total ${fmt(total)}\n\n${lines.join("\n")}`;
 }
 
 function summary(){
@@ -1158,8 +1129,8 @@ function summary(){
 function confirmSongDelete(song){
  return new Promise(resolve=>{
   const ov=$("songDeleteOverlay");
-  $("songDeleteTitle").textContent=tr(`Delete “${song.title}”?`,`Удалить «${song.title}»?`);
-  $("songDeleteText").textContent=tr("This song will be removed from Repertoire, Current Set and all Saved Sets.","Песня будет удалена из Репертуара, Текущего сета и всех Сохранённых сетов.");
+  $("songDeleteTitle").textContent=`Delete “${song.title}”?`;
+  $("songDeleteText").textContent="This song will be removed from Repertoire, Current Set and all Saved Sets.";
   ov.hidden=false;
   const close=value=>{
    ov.hidden=true;
@@ -1184,15 +1155,15 @@ function deleteSongEverywhere(id){
 }
 async function editSong(id){
  const s=byId(id); if(!s)return;
- const title=prompt(tr("Song title:","Название песни:"),s.title); if(title===null)return;
- const cleanTitle=title.trim(); if(!cleanTitle){alert(tr("Song title cannot be empty.","Название песни не может быть пустым."));return}
- const minText=prompt(tr("Minutes:","Минуты:"),String(Math.floor(s.duration/60))); if(minText===null)return;
- const secText=prompt(tr("Seconds (0–59):","Секунды (0–59):"),String(s.duration%60)); if(secText===null)return;
+ const title=prompt("Song title:",s.title); if(title===null)return;
+ const cleanTitle=title.trim(); if(!cleanTitle){alert("Song title cannot be empty.");return}
+ const minText=prompt("Minutes:",String(Math.floor(s.duration/60))); if(minText===null)return;
+ const secText=prompt("Seconds (0–59):",String(s.duration%60)); if(secText===null)return;
  const min=Number(minText),sec=Number(secText);
- if(!Number.isInteger(min)||min<0||!Number.isInteger(sec)||sec<0||sec>59){alert(tr("Invalid duration.","Некорректная длительность."));return}
+ if(!Number.isInteger(min)||min<0||!Number.isInteger(sec)||sec<0||sec>59){alert("Invalid duration.");return}
  await new Promise(resolve=>setTimeout(resolve,350));
  const key=await chooseKey(s.key||""); if(key===null)return;
- const picked=await pickCategory(repCategories,s.project,{newPrompt:tr("New Repertoire category name:","Название новой категории репертуара:")});
+ const picked=await pickCategory(repCategories,s.project,{newPrompt:"New Repertoire category name:"});
  if(!picked)return;
  let project=repCategories.find(x=>x.toLowerCase()===picked.category.toLowerCase());
  if(!project){repCategories.push(picked.category);project=picked.category}
@@ -1479,7 +1450,7 @@ function renderRep(){
  const q=$("search").value.trim().toLowerCase(),f=$("filter").value,host=$("rep");
  host.innerHTML="";
  const list=songs.filter(s=>(f==="All"||s.project===f)&&s.title.toLowerCase().includes(q));
- if(!list.length){host.innerHTML=`<div class="empty">${tr("No songs found","Песни не найдены")}</div>`;return}
+ if(!list.length){host.innerHTML='<div class="empty">No songs found</div>';return}
  list.forEach(s=>{
   const row=document.createElement("div");row.className="row";row.dataset.id=s.id;
   row.innerHTML='<div class="songline"><div class="title"></div><div class="duration"></div></div><div class="songkey"></div><div class="handle" title="Drag">≡</div><button class="btn toggle" type="button"></button>';
@@ -1506,7 +1477,7 @@ function renderRep(){
   const del=document.createElement("button");
   del.type="button";
   del.className="repSwipeDelete";
-  del.textContent=tr("Delete","Удалить");
+  del.textContent="Delete";
   del.onclick=async e=>{
    e.stopPropagation();
    closeOpenRepSwipe();
@@ -1521,7 +1492,7 @@ function renderRep(){
 }
 function renderSet(){
  const host=$("main");host.innerHTML="";
- if(!main.length){host.innerHTML=`<div class="empty">${tr("Current Set is empty","Текущий сет пуст")}</div>`;return}
+ if(!main.length){host.innerHTML='<div class="empty">Current Set is empty</div>';return}
  main.forEach((item,i)=>{
   const s=byId(item.id);if(!s)return;
   const row=document.createElement("div");row.className="setrow";row.dataset.id=s.id;
@@ -1579,14 +1550,14 @@ function openSavedSetEditor(index){
 
  savedCategories.forEach(cat=>{
   const o=document.createElement("option");
-  o.value=cat;o.textContent=categoryLabel(cat);
+  o.value=cat;o.textContent=cat;
   categorySelect.appendChild(o);
  });
 
  const currentCategory=x.category||SYSTEM_CATEGORY;
  if(![...categorySelect.options].some(o=>o.value===currentCategory)){
   const o=document.createElement("option");
-  o.value=currentCategory;o.textContent=categoryLabel(currentCategory);
+  o.value=currentCategory;o.textContent=currentCategory;
   categorySelect.appendChild(o);
  }
  categorySelect.value=currentCategory;
@@ -1627,10 +1598,10 @@ $("savedEditOverlay").onclick=e=>{
 };
 
 $("savedEditNewCategory").onclick=()=>{
- const name=prompt(tr("New Saved Sets category name:","Название новой категории сетов:"));
+ const name=prompt("New Saved Sets category name:");
  if(name===null)return;
  const clean=name.trim();
- if(!clean){alert(tr("Category name cannot be empty.","Название категории не может быть пустым."));return}
+ if(!clean){alert("Category name cannot be empty.");return}
 
  let category=(clean.toLowerCase()==="uncategorized" || clean.toLowerCase()==="uncategorised")
   ? SYSTEM_CATEGORY
@@ -1645,7 +1616,7 @@ $("savedEditNewCategory").onclick=()=>{
  const select=$("savedEditCategory");
  if(![...select.options].some(o=>o.value===category)){
   const o=document.createElement("option");
-  o.value=category;o.textContent=categoryLabel(category);
+  o.value=category;o.textContent=category;
   select.appendChild(o);
  }
  select.value=category;
@@ -1659,7 +1630,7 @@ $("savedEditSave").onclick=()=>{
 
  const cleanName=$("savedEditName").value.trim();
  if(!cleanName){
-  alert(tr("Saved set name cannot be empty.","Название сета не может быть пустым."));
+  alert("Saved set name cannot be empty.");
   $("savedEditName").focus();
   return;
  }
@@ -1692,15 +1663,15 @@ function renderSaved(){
  const host=$("saved");host.innerHTML="";
  const f=$("savedFilter").value||"All";
  const indexes=saved.map((x,i)=>({x,i})).filter(v=>f==="All"||v.x.category===f);
- if(!indexes.length){host.innerHTML=`<div class="empty">${tr("No saved sets in this category","В этой категории нет сохранённых сетов")}</div>`;return}
+ if(!indexes.length){host.innerHTML='<div class="empty">No saved sets in this category</div>';return}
  indexes.forEach(({x,i})=>{
   const row=document.createElement("div");row.className="savedrow";
-  row.innerHTML=`<div class="savedopen" role="button" tabindex="0"><div class="savedTitleLine"><div class="title"></div><span class="savedFavoriteMark" aria-hidden="true" hidden>★</span></div><div class="meta"></div></div><div class="savedIconGroup"><button class="btn savedmini shareIcon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V3"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 11v8h14v-8"/></svg></button><button class="btn savedmini copyIcon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="11" height="11" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-10A1.5 1.5 0 0 0 3 5.5v10A1.5 1.5 0 0 0 4.5 17H8"/></svg></button></div><button class="btn savedmini del">${tr("Delete","Удалить")}</button>`;
+  row.innerHTML='<div class="savedopen" role="button" tabindex="0"><div class="savedTitleLine"><div class="title"></div><span class="savedFavoriteMark" aria-hidden="true" hidden>★</span></div><div class="meta"></div></div><button class="btn savedmini del" type="button">Delete</button><button class="btn savedmini savedIconBtn copy" type="button" aria-label="Copy set list" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"></path></svg></button><button class="btn savedmini savedIconBtn share" type="button" aria-label="Share set list" title="Share"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="m8.2 10.8 7.6-4.5M8.2 13.2l7.6 4.5"></path></svg></button>';
   const title=row.querySelector(".title");
   title.textContent=x.name;
   row.querySelector(".savedFavoriteMark").hidden=!x.favorite;
   const savedTotal=x.main.reduce((n,item)=>n+(byId(item.id)?.duration||0),0);
-  row.querySelector(".meta").textContent=`${x.main.length} ${tr("songs","песен")} · ${tr("Total","Всего")} ${fmt(savedTotal)}`;
+  row.querySelector(".meta").textContent=`${x.main.length} songs · Total ${fmt(savedTotal)}`;
 
   let suppressOpenUntil=0;
   const openSet=()=>{
@@ -1721,38 +1692,29 @@ function renderSaved(){
    const lines=x.main.map((item,j)=>`${j+1}. ${byId(item.id)?.title||"Unknown song"}`);
    return `${x.name}\n${x.main.length} songs · Total ${fmt(total)}\n\n${lines.join("\n")}`;
   };
-  row.querySelector(".shareIcon").onclick=async()=>{
-   const text=savedSetText();
-   try{
-    if(navigator.share){
-     await navigator.share({title:x.name,text});
-     return;
-    }
-   }catch(err){
-    if(err && err.name==="AbortError")return;
-   }
-  };
-  row.querySelector(".copyIcon").onclick=async()=>{
+  row.querySelector(".copy").onclick=async()=>{
    const text=savedSetText();
    try{
     if(navigator.clipboard && navigator.clipboard.writeText){
      await navigator.clipboard.writeText(text);
-     alert(tr("Set list copied to clipboard.","Сет-лист скопирован."));
+     alert("Set list copied to clipboard.");
      return;
     }
    }catch(err){}
    const ta=document.createElement("textarea");
-   ta.value=text;
-   ta.style.position="fixed";
-   ta.style.opacity="0";
-   document.body.appendChild(ta);
-   ta.focus();ta.select();
-   const ok=document.execCommand("copy");
-   ta.remove();
-   alert(ok?tr("Set list copied to clipboard.","Сет-лист скопирован."):tr("Could not copy the set list.","Не удалось скопировать сет-лист."));
+   ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();
+   const ok=document.execCommand("copy");ta.remove();
+   alert(ok?"Set list copied to clipboard.":"Could not copy the set list.");
+  };
+  row.querySelector(".share").onclick=async()=>{
+   const text=savedSetText();
+   try{
+    if(navigator.share){await navigator.share({title:x.name,text});return;}
+   }catch(err){if(err && err.name==="AbortError")return;}
+   alert("Sharing is not available on this device.");
   };
   row.querySelector(".del").onclick=()=>{
-   if(confirm(tr("Delete this saved set?","Удалить этот сохранённый сет?"))){
+   if(confirm("Delete this saved set?")){
     rememberSavedForUndo();
     const deletedId=saved[i].id;
     saved.splice(i,1);
@@ -1787,7 +1749,7 @@ $("filter").onchange=()=>{
   $("filter").value=cat||"All";
  }
  lastRepFilter=$("filter").value;
- localStorage.setItem("setlist_public_rep_filter",lastRepFilter);
+ localStorage.setItem("setlist_rep_filter",lastRepFilter);
  updateCategoryManageButtons();
  renderRep();
 };
@@ -1798,7 +1760,7 @@ $("savedFilter").onchange=()=>{
   $("savedFilter").value=cat||"All";
  }
  lastSavedFilter=$("savedFilter").value;
- localStorage.setItem("setlist_public_saved_filter",lastSavedFilter);
+ localStorage.setItem("setlist_saved_filter",lastSavedFilter);
  updateCategoryManageButtons();
  renderSaved();updateSavedUndoButton();
 };
@@ -1840,12 +1802,12 @@ $("addForm").onsubmit=e=>{
  const key=$("newKey").dataset.value||"";
  songs.push({id:"s"+Date.now(),title,duration:min*60+sec,key,project:$("newProject").value});
  $("newTitle").value="";$("newMin").value="";$("newSec").value="";
- $("newKey").dataset.value="";$("newKey").textContent=tr("Key","Тональность");
+ $("newKey").dataset.value="";$("newKey").textContent="Key";
  persist();renderRep();
 };
 $("bulkAdd").onclick=()=>{
  const text=$("bulkText").value.trim();
- if(!text){$("bulkResult").textContent=tr("Paste a list of songs.","Вставьте список песен.");return}
+ if(!text){$("bulkResult").textContent="Paste a list of songs.";return}
  const project=$("bulkProject").value;
  const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
  let added=0;
@@ -1889,8 +1851,8 @@ $("bulkAdd").onclick=()=>{
  // On partial success, leave only failed lines in the box so they can be corrected.
  $("bulkText").value=failedLines.join("\n");
  $("bulkResult").textContent=skipped.length
-  ? tr(`Added: ${added}. Unrecognized lines: ${skipped.join(", ")}.`,`Добавлено: ${added}. Не распознаны строки: ${skipped.join(", ")}.`)
-  : tr(`Songs added: ${added}.`,`Добавлено песен: ${added}.`);
+  ? `Added: ${added}. Unrecognized lines: ${skipped.join(", ")}.`
+  : `Songs added: ${added}.`;
 };
 
 $("currentSetFavorite").onclick=e=>{
@@ -1978,7 +1940,7 @@ $("redoSet").onclick=()=>{
  updateUndoRedoButtons();
 };
 $("shareSet").onclick=async()=>{
- if(!main.length){alert(tr("Current Set is empty.","Текущий сет пуст."));return}
+ if(!main.length){alert("Current Set is empty.");return}
  const text=currentSetPlainText();
  try{
   if(navigator.share){
@@ -1991,7 +1953,7 @@ $("shareSet").onclick=async()=>{
  try{
   if(navigator.clipboard && navigator.clipboard.writeText){
    await navigator.clipboard.writeText(text);
-   alert(tr("Set list copied to clipboard.","Сет-лист скопирован."));
+   alert("Set list copied to clipboard.");
    return;
   }
  }catch(err){}
@@ -2003,7 +1965,7 @@ $("shareSet").onclick=async()=>{
  ta.focus();ta.select();
  const ok=document.execCommand("copy");
  ta.remove();
- alert(ok?tr("Set list copied to clipboard.","Сет-лист скопирован."):tr("Could not copy the set list.","Не удалось скопировать сет-лист."));
+ alert(ok?"Set list copied to clipboard.":"Could not copy the set list.");
 };
 
 $("updateSet").onclick=()=>{
@@ -2011,7 +1973,7 @@ $("updateSet").onclick=()=>{
  const index=saved.findIndex(x=>x.id===currentSavedId);
  if(index<0){updateCurrentSetButton();return}
  const target=saved[index];
- if(!confirm(tr(`Update "${target.name}" with the current song order and contents?`,`Обновить «${target.name}» текущим порядком и составом песен?`)))return;
+ if(!confirm(`Update "${target.name}" with the current song order and contents?`))return;
  rememberSavedForUndo();
  target.main=clone(main);
  persist();renderAll();
@@ -2020,7 +1982,7 @@ $("updateSet").onclick=()=>{
 $("clearSet").onclick=()=>{
  cancelPendingDeletes();
  if(!main.length)return;
- if(!confirm(tr("Clear the current set?","Очистить текущий сет?")))return;
+ if(!confirm("Clear the current set?"))return;
  rememberMainForUndo();
  main=[];currentSetName="";currentSavedId="";persist();renderAll();
 };
@@ -2062,111 +2024,19 @@ $("backupFile").onchange=async e=>{
  try{
   const data=JSON.parse(await file.text());
   if(!data||data.app!=="Set List"||!Array.isArray(data.songs)||!Array.isArray(data.main)||!Array.isArray(data.saved))throw new Error("invalid");
-  if(!confirm(tr("Restore this backup? Current data will be replaced.","Восстановить эту резервную копию? Текущие данные будут заменены."))){e.target.value="";return}
+  if(!confirm("Restore this backup? Current data will be replaced.")){e.target.value="";return}
   songs=data.songs;
-  repCategories=Array.isArray(data.repCategories)?uniqueClean([...data.repCategories.map(normalizeCategory),...songs.map(s=>normalizeCategory(s.project))]):uniqueClean([...songs.map(s=>normalizeCategory(s.project))]);
+  repCategories=Array.isArray(data.repCategories)?uniqueClean([...data.repCategories,...songs.map(s=>s.project)]):uniqueClean(["MessAge","Браво",...songs.map(s=>s.project)]);
   undoMain=[];redoMain=[];undoSaved=null;
   currentSetName=data.currentSetName||"";
   currentSavedId=data.currentSavedId||"";
   main=[...(data.main||[]),...(data.encore||[])].filter((v,i,a)=>a.findIndex(y=>y.id===v.id)===i).map(x=>({id:x.id}));
   saved=data.saved.map((x,i)=>({id:x.id||("set_"+Date.now()+"_"+i),name:x.name,category:(x.category||SYSTEM_CATEGORY).trim()||SYSTEM_CATEGORY,favorite:!!x.favorite,main:[...(x.main||[]),...(x.encore||[])].filter((v,i,a)=>a.findIndex(y=>y.id===v.id)===i).map(y=>({id:y.id}))}));
-  savedCategories=Array.isArray(data.savedCategories)?uniqueClean([...data.savedCategories.map(normalizeCategory),...saved.map(x=>x.category)]):uniqueClean([...saved.map(x=>x.category)]);
-  persist();refreshCategoryControls();renderAll();alert(tr("Backup restored.","Резервная копия восстановлена."));
- }catch(err){alert(tr("Could not read the backup file.","Не удалось прочитать файл резервной копии."))}
+  savedCategories=Array.isArray(data.savedCategories)?uniqueClean([SYSTEM_CATEGORY,...data.savedCategories,...saved.map(x=>x.category)]):uniqueClean([SYSTEM_CATEGORY,...saved.map(x=>x.category)]);
+  persist();refreshCategoryControls();renderAll();alert("Backup restored.");
+ }catch(err){alert("Could not read the backup file.")}
  e.target.value="";
 };
-
-function applyHelpLanguage(){
- const ru=currentLanguage==="ru";
- const set=(id,html)=>{const el=document.getElementById(id);if(el)el.innerHTML=html};
- set("closeHelp",ru?"‹ Назад":"‹ Back");
- const top=document.querySelector('.helpTopTitle');if(top)top.textContent=ru?"Помощь":"Help";
- set("helpIntro",ru?"Конфиденциальность\nВаш репертуар и сет-листы хранятся локально на вашем устройстве. Set List не передаёт эти данные на сервер.\n\nПодробное руководство по основным функциям Set List. Резервную копию можно экспортировать во вкладке «Сеты».":"Privacy\nYour repertoire and set lists are stored locally on your device. Set List does not transmit this data to a server.\n\nA detailed guide to the main Set List controls. You can export a backup from Saved Sets.");
- set("helpRepTitle",ru?"Репертуар":"Repertoire");
- set("helpCurrentTitle",ru?"Текущий сет":"Current Set");
- set("helpSavedTitle",ru?"Сеты":"Saved Sets");
- const imgs={
-  helpRepImg1:ru?"help-ru-repertoire-1.jpg":"help-en-repertoire-1.jpg",
-  helpRepImg2:ru?"help-ru-repertoire-2.jpg":"help-en-repertoire-2.jpg",
-  helpCurrentImg1:ru?"help-ru-current-1.jpg":"help-en-current-1.jpg",
-  helpCurrentImg2:ru?"help-ru-current-2.jpg":"help-en-current-2.jpg",
-  helpSavedImg:ru?"help-ru-saved.jpg":"help-en-saved.jpg"
- };
- Object.entries(imgs).forEach(([id,src])=>{const el=document.getElementById(id);if(el)el.src=src});
- set("helpRepText",ru?`
-  <p><b>Репертуар</b> — ваша общая библиотека песен. Поле <b>Поиск песен</b> ищет по названию, а список категорий позволяет показывать только нужную группу или проект. Счётчик показывает количество выбранных песен и их общую продолжительность.</p>
-  <p><b>Категории.</b> Кнопка <b>⋯</b> рядом с фильтром открывает управление выбранной категорией: её можно переименовать или очистить. Пустую категорию можно удалить. Если есть песни, которым категория не назначена, автоматически появляется системная группа <b>Без категории</b>.</p>
-  <p><b>+ / ✓</b> добавляет песню в Текущий сет или удаляет её из него. <b>✓</b> означает, что песня уже находится в Текущем сете. Нажмите на <b>тональность</b>, чтобы изменить её; тональность указывать необязательно. Перетаскивайте <b>≡</b>, чтобы менять порядок песен в Репертуаре.</p>
-  <p><b>Нажмите и удерживайте название песни</b>, чтобы отредактировать название, продолжительность или категорию. <b>Смахните строку песни вправо</b>, чтобы открыть Delete / «Удалить».</p>
-  <p><b>Добавить песню</b> добавляет одну песню вручную: название, минуты, секунды, тональность и категория. <b>Добавить песни списком</b> позволяет вставить сразу несколько песен — по одной в строке.</p>
-  <p>Формат списка: <b>Название—3:42—A</b>, без пробелов вокруг разделителей. Тональность необязательна, поэтому допустимо и <b>Название—3:42</b>. Выбранная ниже категория применяется к добавляемым песням.</p>
-  <p class="helpNote"><b>Важно:</b> удаление песни из Репертуара удаляет её также из Текущего сета и из всех сохранённых сетов.</p>`:`
-  <p><b>Repertoire</b> is your complete song library. <b>Search songs</b> searches by title, while the category selector shows only the band or project you need. The counter shows the number of selected songs and their total duration.</p>
-  <p><b>Categories.</b> The <b>⋯</b> button beside the filter manages the selected category: rename it or clear its songs. An empty category can also be deleted. If songs have no assigned category, the system group <b>Uncategorized</b> appears automatically.</p>
-  <p><b>+ / ✓</b> adds a song to Current Set or removes it. <b>✓</b> means the song is already in Current Set. Tap the <b>Key</b> to change it; the key is optional. Drag <b>≡</b> to change the song order in Repertoire.</p>
-  <p><b>Press and hold a song title</b> to edit its title, duration or category. <b>Swipe the song row right</b> to reveal Delete.</p>
-  <p><b>Add song</b> adds one song manually: title, minutes, seconds, key and category. <b>Add songs as a list</b> lets you paste several songs at once, one song per line.</p>
-  <p>List format: <b>Title—3:42—A</b>, with no spaces around the separators. Key is optional, so <b>Title—3:42</b> is also valid. The category selected below is applied to the songs you add.</p>
-  <p class="helpNote"><b>Important:</b> deleting a song from Repertoire also removes it from Current Set and from every Saved Set.</p>`);
- set("helpCurrentText",ru?`
-  <p><b>Текущий сет</b> — сет-лист, над которым вы сейчас работаете. Вверху показаны количество песен и общая продолжительность. Если открыт ранее сохранённый сет, его название отображается над списком.</p>
-  <p>Перетаскивайте <b>≡</b>, чтобы менять порядок песен. Нажмите <b>−</b>, чтобы убрать песню из Текущего сета, не удаляя её из Репертуара. Нажмите на <b>тональность</b>, чтобы изменить её. <b>Нажмите и удерживайте название песни</b>, чтобы отредактировать её данные.</p>
-  <p><b>★</b> помечает открытый сохранённый сет как избранный. <b>Отменить / Повторить</b> позволяют последовательно отменять и возвращать последние изменения Текущего сета.</p>
-  <p><b>Очистить текущий сет</b> удаляет из Текущего сета все песни. <b>Обновить текущий сет</b> перезаписывает тот сохранённый сет, который сейчас открыт.</p>
-  <p class="helpNote"><b>Изменения открытого сохранённого сета не сохраняются автоматически.</b> Чтобы записать новый порядок, удаление или другие изменения в существующий сет, нажмите <b>Обновить текущий сет</b>.</p>
-  <p><b>Поделиться / Копировать сет-лист</b> создаёт простой текстовый список, которым можно поделиться или который можно скопировать.</p>
-  <p><b>Сохранить текущий сет</b> создаёт новый сохранённый сет. Введите название, при необходимости выберите категорию и нажмите <b>Сохранить</b>.</p>`:`
-  <p><b>Current Set</b> is the set list you are working on. The top bar shows song count and total duration. If a previously saved set is open, its name appears above the song list.</p>
-  <p>Drag <b>≡</b> to reorder songs. Tap <b>−</b> to remove a song from Current Set without deleting it from Repertoire. Tap the <b>Key</b> to change it. <b>Press and hold a song title</b> to edit its details.</p>
-  <p><b>★</b> marks the open Saved Set as a favorite. <b>Undo / Redo</b> steps backward or forward through recent Current Set changes.</p>
-  <p><b>Clear current set</b> removes every song from Current Set. <b>Update current set</b> overwrites the Saved Set that is currently open.</p>
-  <p class="helpNote"><b>Changes to an open Saved Set are not saved automatically.</b> To store a new order, removals or other edits in that existing set, tap <b>Update current set</b>.</p>
-  <p><b>Share / Copy set list</b> creates a simple text list that you can share or copy.</p>
-  <p><b>Save current set</b> creates a new Saved Set. Enter a name, optionally choose a category, then tap <b>Save</b>.</p>`);
- set("helpSavedText",ru?`
-  <p><b>Сеты</b> хранит все сохранённые сет-листы. Нажмите название сета, чтобы открыть его в Текущем сете. Для каждого сета показаны количество песен и общая продолжительность; <b>★</b> обозначает избранный сет.</p>
-  <p><b>Фильтр категорий</b> показывает сеты выбранной категории. Категории сетов управляются отдельно от категорий Репертуара. Кнопка <b>⋯</b> позволяет переименовать или очистить выбранную категорию; пустую категорию можно удалить.</p>
-  <p><b>Нажмите и удерживайте название сета</b>, чтобы переименовать его или изменить категорию. Иконка <b>Поделиться</b> открывает системное меню отправки, иконка <b>Копировать</b> копирует сет-лист как текст. <b>Удалить</b> удаляет сохранённый сет.</p>
-  <p><b>Отменить последнее изменение</b> восстанавливает последнее изменение в Сетах, когда отмена доступна.</p>
-  <p><b>Резервная копия / Восстановление.</b> <b>Экспорт копии</b> сохраняет резервную копию данных приложения. <b>Импорт копии</b> восстанавливает её и заменяет текущие данные данными из выбранной резервной копии.</p>
-  <p>Резервная копия включает <b>Репертуар, категории, Текущий сет и все сохранённые сеты</b>. Полезно экспортировать её перед переносом приложения на другое устройство или перед крупными изменениями.</p>`:`
-  <p><b>Saved Sets</b> stores all your saved set lists. Tap a set name to open it in Current Set. Each set shows song count and total duration; <b>★</b> marks a favorite.</p>
-  <p>The <b>category filter</b> shows sets from the selected category. Saved Set categories are managed independently from Repertoire categories. The <b>⋯</b> button lets you rename or clear the selected category; an empty category can also be deleted.</p>
-  <p><b>Press and hold a set name</b> to rename it or change its category. The <b>Share</b> icon opens the system share sheet, the <b>Copy</b> icon copies the set list as text, and <b>Delete</b> removes the Saved Set.</p>
-  <p><b>Undo last change</b> restores the most recent Saved Sets change when undo is available.</p>
-  <p><b>Backup / Restore.</b> <b>Export Backup</b> saves a backup of the app data. <b>Import Backup</b> restores a backup and replaces the current data with the data from the selected backup file.</p>
-  <p>The backup includes <b>Repertoire, categories, Current Set and all Saved Sets</b>. Exporting a backup is useful before moving to another device or making major changes.</p>`);
- set("helpGesturesTitle",ru?"Жесты":"Gestures");
- set("gestureTapTitle",ru?"Нажатие":"Tap"); set("gestureTapText",ru?"Открыть, выбрать или изменить элемент управления.":"Open, select or change a control.");
- set("gestureHoldTitle",ru?"Нажать и удерживать":"Press and hold"); set("gestureHoldText",ru?"Редактировать песню или сохранённый сет.":"Edit a song or a saved set.");
- set("gestureDragTitle",ru?"Перетащить ≡":"Drag ≡"); set("gestureDragText",ru?"Изменить порядок песен.":"Change the order of songs.");
- set("gestureSwipeTitle",ru?"Смахнуть вправо":"Swipe right"); set("gestureSwipeText",ru?"Показать удаление песни в Репертуаре.":"Reveal Delete for a Repertoire song.");
-}
-
-function applyLanguage(){
- document.documentElement.lang=currentLanguage==="ru"?"ru":"en";
- const q=(sel,txt)=>{const el=document.querySelector(sel);if(el)el.textContent=txt};
- q('.tab[data-tab="rep"]',tr("Repertoire","Репертуар"));
- q('.tab[data-tab="set"]',tr("Current Set","Текущий сет"));
- q('.tab[data-tab="saved"]',tr("Saved Sets","Сеты"));
- $("search").placeholder=tr("Search songs...","Поиск песен...");
- q('#panel-rep .holdhint',tr("Press and hold a song title to edit.","Нажмите и удерживайте название песни для редактирования."));
- const sums=document.querySelectorAll('#panel-rep details summary'); if(sums[0])sums[0].textContent=tr("Add song","Добавить песню"); if(sums[1])sums[1].textContent=tr("Add songs as a list","Добавить песни списком");
- $("newTitle").placeholder=tr("Title","Название"); $("newMin").placeholder=tr("min","мин"); $("newSec").placeholder=tr("sec","сек");
- if(!$("newKey").dataset.value) $("newKey").textContent=tr("Key","Тональность");
- q('#addForm .add',tr("Add","Добавить")); q('#bulkAdd',tr("Add all","Добавить все"));
- q('#panel-rep .note',tr("One song per line: Title—3:42—A. Key is optional.","Одна песня в строке: Название—3:42—A. Тональность необязательна."));
- document.querySelectorAll(".songsLabel").forEach(el=>el.textContent=tr("songs","песен"));document.querySelectorAll(".totalLabel").forEach(el=>el.textContent=tr("Total","Всего"));
- q('#undoSet',tr("Undo","Отменить"));q('#redoSet',tr("Redo","Повторить"));q('#clearSet',tr("Clear current set","Очистить текущий сет"));q('#updateSet',tr("Update current set","Обновить текущий сет"));q('#shareSet',tr("Share / Copy set list","Поделиться / Копировать сет-лист"));
- q('#panel-set .section',tr("Save current set","Сохранить текущий сет")); $("setName").placeholder=tr("Set name","Название сета"); q('#saveSet',tr("Save","Сохранить"));
- q('#panel-saved .section',tr("Saved Sets","Сеты"));q('#panel-saved .holdhint',tr("Press and hold a saved set name to edit it.","Нажмите и удерживайте название сохранённого сета для редактирования."));q('#undoSaved',tr("Undo last change","Отменить последнее изменение"));
- q('#panel-saved .backup .section',tr("Backup / Restore","Резервная копия / Восстановление"));q('#exportBackup',tr("Export Backup","Экспорт копии"));q('#importBackup',tr("Import Backup","Импорт копии"));q('#panel-saved .backup .note',tr("Backup includes Repertoire, Current Set, and all Saved Sets.","Резервная копия включает Репертуар, Текущий сет и все Сохранённые сеты."));
- q('#savedEditHeading',tr("Edit Saved Set","Редактировать сет")); const labs=document.querySelectorAll('#savedEditOverlay label');if(labs[0])labs[0].textContent=tr("Set name","Название сета");if(labs[1])labs[1].textContent=tr("Category","Категория");q('#savedEditNewCategory',tr("New category…","Новая категория…"));q('#savedEditCancel',tr("Cancel","Отмена"));q('#savedEditSave',tr("Save","Сохранить"));
- q('#songDeleteConfirm',tr("Delete song","Удалить песню"));q('#songDeleteCancel',tr("Cancel","Отмена"));q('#categoryManageCancel',tr("Cancel","Отмена"));q('#accidentalPickerTitle',tr("Key","Тональность"));q('#accCancel',tr("Cancel","Отмена"));
- q('#languageTitle',tr("Language","Язык"));q('#languageCancel',tr("Cancel","Отмена"));
- applyHelpLanguage();
- refreshCategoryControls(); renderAll();
-}
 
 persist();refreshCategoryControls();
 document.querySelectorAll("#accidentalPicker [data-key]").forEach(btn=>{
@@ -2179,14 +2049,6 @@ $("accidentalPicker").onclick=e=>{
 
 renderAll();
 
-
-const languageOverlay=document.getElementById("languageOverlay");
-$("openLanguage").onclick=()=>{languageOverlay.hidden=false};
-$("languageCancel").onclick=()=>{languageOverlay.hidden=true};
-languageOverlay.onclick=e=>{if(e.target===languageOverlay)languageOverlay.hidden=true};
-$("languageEnglish").onclick=()=>{currentLanguage="en";localStorage.setItem("setlist_public_language","en");languageOverlay.hidden=true;applyLanguage()};
-$("languageRussian").onclick=()=>{currentLanguage="ru";localStorage.setItem("setlist_public_language","ru");languageOverlay.hidden=true;applyLanguage()};
-applyLanguage();
 
 const helpOverlay=document.getElementById("helpOverlay");
 const openHelp=document.getElementById("openHelp");
