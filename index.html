@@ -533,7 +533,7 @@ input, textarea {
 .messageBrand{gap:0;transform:translateY(8px);margin-left:auto;padding-right:4px}
 .messageBrand .messageLogo{margin-left:0}
 
-/* v2.9 global header tools */
+/* v3.0 global header tools */
 .headerTools{margin-left:auto;display:flex;align-items:center;gap:8px;padding:3px 7px 0 0}
 .headerToolBtn{appearance:none;border:0;background:transparent;color:#aeb3bb;width:38px;height:38px;padding:7px;display:grid;place-items:center;border-radius:10px}
 .headerToolBtn:active{background:#25282b;color:#fff}
@@ -561,7 +561,7 @@ input, textarea {
   <div class="header brandedHeader">
     <div class="titleBlock brandedTitleBlock">
       <img class="setListHeaderLogo" src="setlist-logo.png" alt="Set List">
-      <div class="version">Version 2.9</div>
+      <div class="version">Version 3.0</div>
     </div>
     <div class="headerTools">
       <button id="openLanguage" class="headerToolBtn" type="button">
@@ -604,12 +604,12 @@ input, textarea {
 
     <details class="card addCard">
       <summary>Add songs as a list</summary>
-      <textarea id="bulkText" placeholder="Song One—3:42—Am&#10;Song Two—4:05—E&#10;Song Three—3:18"></textarea>
+      <textarea id="bulkText" placeholder="Song One—3:42—A&#10;Song Two—4:05—E&#10;Song Three—3:18"></textarea>
       <div class="bulkActions">
         <select id="bulkProject"></select>
         <button id="bulkAdd" class="btn primary" type="button">Add all</button>
       </div>
-      <div class="note">One song per line: Title—3:42—Am. Key is optional.</div>
+      <div class="note">One song per line: Title—3:42—A. Key is optional.</div>
       <div id="bulkResult" class="note"></div>
     </details>
   </section>
@@ -2079,18 +2079,18 @@ function applyLanguage(){
  const q=(sel,txt)=>{const el=document.querySelector(sel);if(el)el.textContent=txt};
  q('.tab[data-tab="rep"]',tr("Repertoire","Репертуар"));
  q('.tab[data-tab="set"]',tr("Current Set","Текущий сет"));
- q('.tab[data-tab="saved"]',tr("Saved Sets","Сохранённые сеты"));
+ q('.tab[data-tab="saved"]',tr("Saved Sets","Сеты"));
  $("search").placeholder=tr("Search songs...","Поиск песен...");
  q('#panel-rep .holdhint',tr("Press and hold a song title to edit.","Нажмите и удерживайте название песни для редактирования."));
  const sums=document.querySelectorAll('#panel-rep details summary'); if(sums[0])sums[0].textContent=tr("Add song","Добавить песню"); if(sums[1])sums[1].textContent=tr("Add songs as a list","Добавить песни списком");
  $("newTitle").placeholder=tr("Title","Название"); $("newMin").placeholder=tr("min","мин"); $("newSec").placeholder=tr("sec","сек");
  if(!$("newKey").dataset.value) $("newKey").textContent=tr("Key","Тональность");
  q('#addForm .add',tr("Add","Добавить")); q('#bulkAdd',tr("Add all","Добавить все"));
- q('#panel-rep .note',tr("One song per line: Title—3:42—Am. Key is optional.","Одна песня в строке: Название—3:42—Am. Тональность необязательна."));
+ q('#panel-rep .note',tr("One song per line: Title—3:42—A. Key is optional.","Одна песня в строке: Название—3:42—A. Тональность необязательна."));
  document.querySelectorAll(".songsLabel").forEach(el=>el.textContent=tr("songs","песен"));document.querySelectorAll(".totalLabel").forEach(el=>el.textContent=tr("Total","Всего"));
  q('#undoSet',tr("Undo","Отменить"));q('#redoSet',tr("Redo","Повторить"));q('#clearSet',tr("Clear current set","Очистить текущий сет"));q('#updateSet',tr("Update current set","Обновить текущий сет"));q('#shareSet',tr("Share / Copy set list","Поделиться / Копировать сет-лист"));
  q('#panel-set .section',tr("Save current set","Сохранить текущий сет")); $("setName").placeholder=tr("Set name","Название сета"); q('#saveSet',tr("Save","Сохранить"));
- q('#panel-saved .section',tr("Saved Sets","Сохранённые сеты"));q('#panel-saved .holdhint',tr("Press and hold a saved set name to edit it.","Нажмите и удерживайте название сохранённого сета для редактирования."));q('#undoSaved',tr("Undo last change","Отменить последнее изменение"));
+ q('#panel-saved .section',tr("Saved Sets","Сеты"));q('#panel-saved .holdhint',tr("Press and hold a saved set name to edit it.","Нажмите и удерживайте название сохранённого сета для редактирования."));q('#undoSaved',tr("Undo last change","Отменить последнее изменение"));
  q('#panel-saved .backup .section',tr("Backup / Restore","Резервная копия / Восстановление"));q('#exportBackup',tr("Export Backup","Экспорт копии"));q('#importBackup',tr("Import Backup","Импорт копии"));q('#panel-saved .backup .note',tr("Backup includes Repertoire, Current Set, and all Saved Sets.","Резервная копия включает Репертуар, Текущий сет и все Сохранённые сеты."));
  q('#savedEditHeading',tr("Edit Saved Set","Редактировать сет")); const labs=document.querySelectorAll('#savedEditOverlay label');if(labs[0])labs[0].textContent=tr("Set name","Название сета");if(labs[1])labs[1].textContent=tr("Category","Категория");q('#savedEditNewCategory',tr("New category…","Новая категория…"));q('#savedEditCancel',tr("Cancel","Отмена"));q('#savedEditSave',tr("Save","Сохранить"));
  q('#songDeleteConfirm',tr("Delete song","Удалить песню"));q('#songDeleteCancel',tr("Cancel","Отмена"));q('#categoryManageCancel',tr("Cancel","Отмена"));q('#accidentalPickerTitle',tr("Key","Тональность"));q('#accCancel',tr("Cancel","Отмена"));
