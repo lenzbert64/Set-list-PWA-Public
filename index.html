@@ -267,6 +267,7 @@ button, input, select, textarea, summary, .row, .setrow, .handle, .title, .tab {
   height:30px;
   padding:2px 7px;
 }
+.savedIconGroup{display:flex;gap:6px;align-items:center}
 .shareIcon,.copyIcon{
   width:34px;
   min-width:34px;
@@ -553,7 +554,7 @@ input, textarea {
   <div class="header brandedHeader">
     <div class="titleBlock brandedTitleBlock">
       <img class="setListHeaderLogo" src="setlist-logo.png" alt="Set List">
-      <div class="version">Version 2.7</div>
+      <div class="version">Version 2.8</div>
     </div>
   </div>
 
@@ -1678,7 +1679,7 @@ function renderSaved(){
  if(!indexes.length){host.innerHTML=`<div class="empty">${tr("No saved sets in this category","В этой категории нет сохранённых сетов")}</div>`;return}
  indexes.forEach(({x,i})=>{
   const row=document.createElement("div");row.className="savedrow";
-  row.innerHTML=`<div class="savedopen" role="button" tabindex="0"><div class="savedTitleLine"><div class="title"></div><span class="savedFavoriteMark" aria-hidden="true" hidden>★</span></div><div class="meta"></div></div><button class="btn savedmini shareIcon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V3"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 11v8h14v-8"/></svg></button><button class="btn savedmini copyIcon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="11" height="11" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-10A1.5 1.5 0 0 0 3 5.5v10A1.5 1.5 0 0 0 4.5 17H8"/></svg></button><button class="btn savedmini del">${tr("Delete","Удалить")}</button>`;
+  row.innerHTML=`<div class="savedopen" role="button" tabindex="0"><div class="savedTitleLine"><div class="title"></div><span class="savedFavoriteMark" aria-hidden="true" hidden>★</span></div><div class="meta"></div></div><div class="savedIconGroup"><button class="btn savedmini shareIcon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V3"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 11v8h14v-8"/></svg></button><button class="btn savedmini copyIcon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="11" height="11" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-10A1.5 1.5 0 0 0 3 5.5v10A1.5 1.5 0 0 0 4.5 17H8"/></svg></button></div><button class="btn savedmini del">${tr("Delete","Удалить")}</button>`;
   const title=row.querySelector(".title");
   title.textContent=x.name;
   row.querySelector(".savedFavoriteMark").hidden=!x.favorite;
